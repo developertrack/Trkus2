@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/profile"
+            android:title="Profile" />
+        <item
+            android:id="@+id/nav_orderhistory"
+            android:icon="@drawable/orderhistory"
+            android:title="Order History" />
+        <item
+            android:id="@+id/nav_appointment"
+            android:icon="@drawable/appointment"
+            android:title="Appointments" />
+        <item
+            android:id="@+id/nav_dailyneeds"
+            android:icon="@drawable/orderhistory"
+            android:title="Daily Needs" />
+        <item
+            android:id="@+id/nav_myseller"
+            android:icon="@drawable/myseller"
+            android:title="My Sellers" />
+        <item
+            android:id="@+id/nav_favourite"
+            android:icon="@drawable/aboutus"
+            android:title="Favourite Contacts" />
+        <item
+            android:id="@+id/nav_notification"
+            android:icon="@drawable/notification"
+            android:title="Notifications" />
+
+
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/share"
+                android:title="Share" />
+           <!-- https://play.google.com/store/apps/details?id=com.medjio.medicalhealthcart-->
+            <item
+                android:id="@+id/nav_aboutus"
+                android:icon="@drawable/aboutus"
+                android:title="About App" />
+            <!--https://www.medjio.com/AboutUs-->
+            <item
+                android:id="@+id/nav_about_turkus"
+                android:icon="@drawable/aboutus"
+                android:title="About Turkus" />
+            <!--https://www.medjio.com/AboutUs-->
+
+            <item
+                android:id="@+id/nav_rateapp"
+                android:icon="@drawable/rateapp"
+                android:title="Rate App" />
+            <!-- https://play.google.com/store/apps/details?id=com.medjio.medicalhealthcart-->
+            <item
+                android:id="@+id/nav_refer"
+                android:icon="@drawable/refer"
+                android:title="Refer App" />
+        </menu>
+    </item>
+
+</menu>

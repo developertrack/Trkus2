@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Trkus</string>
+    <string name="login_page_phone">Enter your 10 digit mobile number to help us secure your account</string>
+    <string name="phone_hint_text">Enter your mobile number</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_dashboard">TRKUS</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

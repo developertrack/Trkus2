@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/profile"
+            android:title="Profile" />
+        <item
+            android:id="@+id/nav_orderhistory"
+            android:icon="@drawable/orderhistory"
+            android:title="Customer Order" />
+
+        <item
+            android:id="@+id/nav_myseller"
+            android:icon="@drawable/myseller"
+            android:title="My Customer" />
+        <item
+            android:id="@+id/nav_favourite"
+            android:icon="@drawable/aboutus"
+            android:title="Favourite Contacts" />
+        <item
+            android:id="@+id/nav_notification"
+            android:icon="@drawable/notification"
+            android:title="Notifications" />
+
+
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/share"
+                android:title="Share" />
+
+            <item
+                android:id="@+id/nav_aboutus"
+                android:icon="@drawable/aboutus"
+                android:title="About App" />
+            <item
+                android:id="@+id/nav_about_turkus"
+                android:icon="@drawable/aboutus"
+                android:title="About Turkus" />
+
+            <item
+                android:id="@+id/nav_rateapp"
+                android:icon="@drawable/rateapp"
+                android:title="Rate App" />
+            <item
+                android:id="@+id/nav_refer"
+                android:icon="@drawable/refer"
+                android:title="Refer App" />
+        </menu>
+    </item>
+
+</menu>
