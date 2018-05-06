@@ -12,15 +12,7 @@ public class CheckPermission {
     //  CHECK FOR LOCATION PERMISSION
     public static boolean checkPermission(Activity activity){
         int result = ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION);
-        if (result == PackageManager.PERMISSION_GRANTED){
-
-            return true;
-
-        } else {
-
-            return false;
-
-        }
+        return result == PackageManager.PERMISSION_GRANTED;
     }
 
     //REQUEST FOR PERMISSSION

@@ -47,7 +47,7 @@ public class CustomeOrderPage extends Fragment{
 
         getActivity().setTitle("Order History");
         View view = inflater.inflate(R.layout.fragment_product_seller_listing, container, false);
-        sellerlist=(ListView)view.findViewById(R.id.sellerlist);
+        sellerlist = view.findViewById(R.id.sellerlist);
         seller_data = new ArrayList<OrderData>();
         session=new UserSessionManager(getActivity());
 

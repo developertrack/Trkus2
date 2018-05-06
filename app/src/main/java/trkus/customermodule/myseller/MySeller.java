@@ -50,7 +50,7 @@ public class MySeller extends Fragment {
 
         getActivity().setTitle("My Sellers");
         View view = inflater.inflate(R.layout.fragment_product_seller_listing, container, false);
-        sellerlist=(ListView)view.findViewById(R.id.sellerlist);
+        sellerlist = view.findViewById(R.id.sellerlist);
         session=new UserSessionManager(getActivity());
         getStore(session.getKeyUserid());
         pDialog = new ProgressDialog(getActivity());

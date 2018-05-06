@@ -24,7 +24,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -64,11 +63,11 @@ public class UserDetailForm extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.userdetailform);
 
-        name = (EditText) findViewById(R.id.name);
-        email = (EditText) findViewById(R.id.email);
-        address = (EditText) findViewById(R.id.address);
-        detect = (LinearLayout) findViewById(R.id.detect);
-        next = (Button) findViewById(R.id.next);
+        name = findViewById(R.id.name);
+        email = findViewById(R.id.email);
+        address = findViewById(R.id.address);
+        detect = findViewById(R.id.detect);
+        next = findViewById(R.id.next);
 
         intent = getIntent();
         UserTypeId=intent.getStringExtra("UserTypeId");
@@ -282,7 +281,7 @@ public class UserDetailForm extends AppCompatActivity {
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;

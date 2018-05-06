@@ -21,7 +21,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -71,12 +70,12 @@ public class Phoneverification extends AppCompatActivity {
             // carry on the normal flow, as the case of  permissions  granted.
         }
         session=new UserSessionManager(Phoneverification.this);
-        input_otp=(EditText)findViewById(R.id.input_otp);
-        counter=(TextView)findViewById(R.id.counter);
-        resend=(TextView)findViewById(R.id.resend);
-        mob_text=(TextView)findViewById(R.id.mob_text);
-        btn_previous=(Button)findViewById(R.id.btn_previous);
-        btn_confirm=(Button)findViewById(R.id.btn_confirm);
+        input_otp = findViewById(R.id.input_otp);
+        counter = findViewById(R.id.counter);
+        resend = findViewById(R.id.resend);
+        mob_text = findViewById(R.id.mob_text);
+        btn_previous = findViewById(R.id.btn_previous);
+        btn_confirm = findViewById(R.id.btn_confirm);
 
         intent = getIntent();
         UserTypeId=intent.getStringExtra("UserTypeId");
@@ -234,7 +233,7 @@ public class Phoneverification extends AppCompatActivity {
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
@@ -324,7 +323,7 @@ public class Phoneverification extends AppCompatActivity {
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;

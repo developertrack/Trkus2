@@ -85,27 +85,27 @@ public class ProfileEdit extends Fragment {
         View view = inflater.inflate(R.layout.activity_profile_edit, container, false);
 //        news= (LinearLayout) view.findViewById(R.id.news);
 
-        et_full_name=(EditText)view.findViewById(R.id.et_full_name);
-        gender=(EditText)view.findViewById(R.id.gender);
-        et_blood_group=(EditText)view.findViewById(R.id.et_blood_group);
-        et_industry_type=(EditText)view.findViewById(R.id.et_industry_type);
-        et_business_category=(EditText)view.findViewById(R.id.et_business_category);
-        et_firm_name=(EditText)view.findViewById(R.id.et_firm_name);
-        et_address=(EditText)view.findViewById(R.id.et_address);
-        et_state=(EditText)view.findViewById(R.id.et_state);
-        et_pincode=(EditText)view.findViewById(R.id.et_pincode);
-        et_landline=(EditText)view.findViewById(R.id.et_landline);
-        et_mobile=(EditText)view.findViewById(R.id.et_mobile);
-        et_email=(EditText)view.findViewById(R.id.et_email);
-        et_emergency_number=(EditText)view.findViewById(R.id.et_emergency_number);
+        et_full_name = view.findViewById(R.id.et_full_name);
+        gender = view.findViewById(R.id.gender);
+        et_blood_group = view.findViewById(R.id.et_blood_group);
+        et_industry_type = view.findViewById(R.id.et_industry_type);
+        et_business_category = view.findViewById(R.id.et_business_category);
+        et_firm_name = view.findViewById(R.id.et_firm_name);
+        et_address = view.findViewById(R.id.et_address);
+        et_state = view.findViewById(R.id.et_state);
+        et_pincode = view.findViewById(R.id.et_pincode);
+        et_landline = view.findViewById(R.id.et_landline);
+        et_mobile = view.findViewById(R.id.et_mobile);
+        et_email = view.findViewById(R.id.et_email);
+        et_emergency_number = view.findViewById(R.id.et_emergency_number);
 
-        layout_photo1=(RelativeLayout)view.findViewById(R.id.layout_photo1);
-        layout_photo2=(RelativeLayout)view.findViewById(R.id.layout_photo2);
-        layout_photo3=(RelativeLayout)view.findViewById(R.id.layout_photo3);
+        layout_photo1 = view.findViewById(R.id.layout_photo1);
+        layout_photo2 = view.findViewById(R.id.layout_photo2);
+        layout_photo3 = view.findViewById(R.id.layout_photo3);
 
-        photo1=(ImageView)view.findViewById(R.id.photo1);
-        photo2=(ImageView)view.findViewById(R.id.photo2);
-        photo3=(ImageView)view.findViewById(R.id.photo3);
+        photo1 = view.findViewById(R.id.photo1);
+        photo2 = view.findViewById(R.id.photo2);
+        photo3 = view.findViewById(R.id.photo3);
         session = new UserSessionManager(getActivity());
 
         layout_photo1.setOnClickListener(new View.OnClickListener() {
@@ -134,7 +134,7 @@ public class ProfileEdit extends Fragment {
         });
 
 
-        scrollprofile=(ScrollView)view.findViewById(R.id.scrollprofile);
+        scrollprofile = view.findViewById(R.id.scrollprofile);
 
         scrollprofile.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -148,7 +148,7 @@ public class ProfileEdit extends Fragment {
         spinner_blood_group = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item, blood_group);
         spinner_gender_type = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_dropdown_item, gender_type);
 
-        btn_save=(Button)view.findViewById(R.id.btn_save);
+        btn_save = view.findViewById(R.id.btn_save);
         pDialog= new ProgressDialog(getActivity());
         pDialog.setMessage("Loading...");
         pDialog.show();

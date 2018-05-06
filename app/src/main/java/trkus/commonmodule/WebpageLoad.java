@@ -23,7 +23,7 @@ public class WebpageLoad extends Fragment {
 
         View view = inflater.inflate(R.layout.webview, container, false);
         String strtext = getArguments().getString("nav_aboutus");
-        mWebView = (WebView) view.findViewById(R.id.webview);
+        mWebView = view.findViewById(R.id.webview);
         mWebView.loadUrl(strtext);
 
         // Enable Javascript
@@ -33,10 +33,13 @@ public class WebpageLoad extends Fragment {
         // Force links and redirects to open in the WebView instead of in a browser
         mWebView.setWebViewClient(new WebViewClient());
 
+
         mWebView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return true;
+
+                mWebView.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
             }
         });
 

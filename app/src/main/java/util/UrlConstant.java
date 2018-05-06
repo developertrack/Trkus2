@@ -20,6 +20,8 @@ public class UrlConstant {
     public static String Post_Order_Url=base_url+"api/Order/OrderAddDailyNeedsItem";
     public static String GET_Customer_Order_Url=base_url+"api/Order/GetOrder?CustomerUserId=";
     public static String GET_Favourite_Seller=base_url+"api/Order/GetFavoriteSeller?CustomerUserId=";
+    public static String GET_Favourite_Contact = base_url + "api/Order/GetFavoriteContact?CustomerId=";
+    public static String POST_Favourite_Contact = base_url + "api/Order/FavoriteContact";
 
 
 }

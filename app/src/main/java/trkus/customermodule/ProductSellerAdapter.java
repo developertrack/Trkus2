@@ -64,17 +64,17 @@ public class ProductSellerAdapter extends ArrayAdapter<ProductSeller> {
             convertView = inflater.inflate(layoutResourceId, parent, false);
 
             holder = new ViewHolder();
-            holder.seller_order = (TextView) convertView
+            holder.seller_order = convertView
                     .findViewById(R.id.seller_order);
-            holder.seller_call = (TextView) convertView
+            holder.seller_call = convertView
                     .findViewById(R.id.seller_call);
-            holder.seller_contact = (TextView) convertView
+            holder.seller_contact = convertView
                     .findViewById(R.id.seller_contact);
-            holder.seller_address = (TextView) convertView
+            holder.seller_address = convertView
                     .findViewById(R.id.seller_address);
-            holder.seller_icon = (NetworkImageView) convertView
+            holder.seller_icon = convertView
                     .findViewById(R.id.seller_icon);
-            holder.seller_name_title = (TextView) convertView
+            holder.seller_name_title = convertView
                     .findViewById(R.id.seller_name_title);
 
             holder. seller_name_title .setTag(position);
@@ -89,7 +89,7 @@ public class ProductSellerAdapter extends ArrayAdapter<ProductSeller> {
         holder.seller_name_title.setText(getdata.getFirmName());
         holder.seller_address.setText(getdata.getAddress1()+" "+getdata.getPinCode());
         holder.seller_contact.setText(getdata.getMobileNumber());
-        holder.seller_icon.setImageUrl("http://webservicestrkus.tarule.com"+getdata.getImage1(), imageLoader);
+        holder.seller_icon.setImageUrl(getdata.getImage1(), imageLoader);
 
         holder.seller_call.setOnClickListener(new View.OnClickListener() {
             @Override

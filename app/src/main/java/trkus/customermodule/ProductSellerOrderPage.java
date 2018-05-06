@@ -25,7 +25,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -89,19 +88,19 @@ public class ProductSellerOrderPage extends Fragment {
         getActivity().setTitle(CategoryName);
         View view = inflater.inflate(R.layout.product_seller_detail, container, false);
 
-        seller_name_title=(TextView) view.findViewById(R.id.seller_name_title);
+        seller_name_title = view.findViewById(R.id.seller_name_title);
         seller_name_title.setText(FirmName);
-        seller_address=(TextView) view.findViewById(R.id.seller_address);
+        seller_address = view.findViewById(R.id.seller_address);
         seller_address.setText(Address1+ " "+ PinCode);
-        seller_contact=(TextView) view.findViewById(R.id.seller_contact);
+        seller_contact = view.findViewById(R.id.seller_contact);
         seller_contact.setText(MobileNumber);
-        upload_list=(TextView) view.findViewById(R.id.upload_list);
-        image=(NetworkImageView)view.findViewById(R.id.image);
-        addtofavourite=(Button)view.findViewById(R.id.addtofavourite);
-        et_itemlist=(EditText)view.findViewById(R.id.et_itemlist);
-        next=(Button)view.findViewById(R.id.next);
+        upload_list = view.findViewById(R.id.upload_list);
+        image = view.findViewById(R.id.image);
+        addtofavourite = view.findViewById(R.id.addtofavourite);
+        et_itemlist = view.findViewById(R.id.et_itemlist);
+        next = view.findViewById(R.id.next);
         session=new UserSessionManager(getActivity());
-        scrollView=(ScrollView)view.findViewById(R.id.scrollView);
+        scrollView = view.findViewById(R.id.scrollView);
         scrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -417,7 +416,7 @@ public class ProductSellerOrderPage extends Fragment {
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;

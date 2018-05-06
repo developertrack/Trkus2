@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import trkus.commonmodule.WebpageLoad;
 import trkus.customermodule.HomePage;
 import trkus.customermodule.customerorder.CustomeOrderPage;
+import trkus.customermodule.favouriteContacts.FavouiteContacts;
 import trkus.customermodule.myseller.MySeller;
 import util.UserSessionManager;
 
@@ -39,16 +40,16 @@ public class Dashboard extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         session=new UserSessionManager(Dashboard.this);
@@ -88,7 +89,7 @@ public class Dashboard extends AppCompatActivity
             shareAppNew();
         } else if (id == R.id.nav_aboutus) {
             Bundle bundle = new Bundle();
-            bundle.putString("nav_aboutus", "https://www.medjio.com/AboutUs");
+            bundle.putString("nav_aboutus", "http://trkus.tarule.com/Home/AboutUs");
             fragment = new WebpageLoad();
             fragment.setArguments(bundle);
             FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
@@ -96,6 +97,12 @@ public class Dashboard extends AppCompatActivity
             tx.commit();
             tx.addToBackStack(null);
 
+        } else if (id == R.id.nav_favourite) {
+            fragment = new FavouiteContacts();
+            FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+            tx.replace(R.id.flContent, fragment, "favourite Contacts");
+            tx.commit();
+            tx.addToBackStack(null);
         } else if (id == R.id.nav_about_turkus) {
 
         } else if (id == R.id.nav_rateapp) {
@@ -104,7 +111,7 @@ public class Dashboard extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -149,7 +156,7 @@ public class Dashboard extends AppCompatActivity
     @Override
     public void onBackPressed() {
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
             return;

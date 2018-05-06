@@ -62,19 +62,19 @@ public class CustomerOrderAdapter extends ArrayAdapter<OrderData> {
             convertView = inflater.inflate(layoutResourceId, parent, false);
 
             holder = new ViewHolder();
-            holder.reorder = (TextView) convertView
+            holder.reorder = convertView
                     .findViewById(R.id.reorder);
-            holder.orderdetail = (TextView) convertView
+            holder.orderdetail = convertView
                     .findViewById(R.id.orderdetail);
-            holder.deliverstatue = (TextView) convertView
+            holder.deliverstatue = convertView
                     .findViewById(R.id.deliverstatue);
-            holder.firmname = (TextView) convertView
+            holder.firmname = convertView
                     .findViewById(R.id.firmname);
-            holder.seller_icon = (NetworkImageView) convertView
+            holder.seller_icon = convertView
                     .findViewById(R.id.seller_icon);
-            holder.order_date = (TextView) convertView
+            holder.order_date = convertView
                     .findViewById(R.id.order_date);
-            holder.orderid=(TextView) convertView
+            holder.orderid = convertView
                     .findViewById(R.id.orderid);
 
             holder. orderdetail .setTag(position);

@@ -6,19 +6,24 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
+
 import trkus.services.com.trkus.R;
 import util.AppController;
 import util.UrlConstant;
@@ -42,12 +47,20 @@ public class ServiceSellerListing extends Fragment {
         CategoryName=getArguments().getString("CategoryName");
         getActivity().setTitle(CategoryName);
         View view = inflater.inflate(R.layout.fragment_product_seller_listing, container, false);
-        sellerlist=(ListView)view.findViewById(R.id.sellerlist);
+        sellerlist = view.findViewById(R.id.sellerlist);
         seller_data = new ArrayList<ServiceSeller>();
         getStore(strtext);
         pDialog = new ProgressDialog(getActivity());
         pDialog.setMessage("Loading...");
         pDialog.show();
+        sellerlist.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                sellerlist.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
         sellerlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
