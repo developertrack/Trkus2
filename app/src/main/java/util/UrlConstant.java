@@ -25,5 +25,6 @@ public class UrlConstant {
     public static String GETCountry_URL = base_url + "api/Account/GetCountryName";
     public static String GETCity_URL = base_url + "api/Account/GetCityName";
     public static String POST_Customer_Profile_Update = base_url + "api/Customer/AddCustomerProfile";
+    public static String GET_Customer_Profile_Update = base_url + "api/Customer/GetCustomerProfileDetails?UserId=";
 
 }

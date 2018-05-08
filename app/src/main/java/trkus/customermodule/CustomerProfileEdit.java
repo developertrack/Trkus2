@@ -70,7 +70,9 @@ public class CustomerProfileEdit extends Fragment {
     Calendar myCalendar;
     DatePickerDialog.OnDateSetListener date;
     private String userChoosenTask;
-
+    String tag_json_obj = "json_obj_req";
+    String result = "NA", response_string;
+    JSONObject data;
     private static boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
@@ -121,7 +123,7 @@ public class CustomerProfileEdit extends Fragment {
         pDialog = new ProgressDialog(getActivity());
         pDialog.setMessage("Loading...");
         pDialog.show();
-
+        getUserDetail(session.getKeyUserid());
         myCalendar = Calendar.getInstance();
 
         date = new DatePickerDialog.OnDateSetListener() {
@@ -873,6 +875,97 @@ public class CustomerProfileEdit extends Fragment {
             et_dateofbirth.setText(year + "-" + (month + 1) + "-" + day);
 
         }
+    }
+
+    public void getUserDetail(String id) {
+
+        pDialog = new ProgressDialog(getActivity());
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                UrlConstant.GET_Customer_Profile_Update + id, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e(TAG, response.toString());
+                try {
+                    String Status = response.getString("Status");
+                    response_string = response.toString();
+                    data = response;
+                    if (Status.equals("false")) {
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                                try {
+                                    dlgAlert.setMessage(data.getString("Message"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                dlgAlert.setPositiveButton("OK", null);
+                                dlgAlert.setCancelable(true);
+                                dlgAlert.create().show();
+                            }
+                        });
+
+                    } else {
+
+                        et_full_name.setText(response.getString("Name"));
+                        gender.setText(response.getString("Gender"));
+                        et_dateofbirth.setText(response.getString("DOB"));
+                        et_email.setText(response.getString("email"));
+                        et_aadhar.setText(response.getString("AdharNumber"));
+                        et_blood_group.setText(response.getString("Bloodgroup"));
+                        et_marital_status.setText(response.getString("MaritalStatus"));
+                        et_occupation.setText(response.getString("Occuption"));
+                        et_mobile.setText(response.getString("MobileNumber"));
+                        et_address.setText(response.getString("Address1"));
+                        et_pincode.setText(response.getString("PinCode"));
+                        et_landline.setText(response.getString("LandLineNumber"));
+                        et_city.setText(response.getString("CityName"));
+                        et_state.setText(response.getString("StateName"));
+                        et_country.setText(response.getString("Country"));
+                        et_emergency_name.setText(response.getString("EmergencyName"));
+                        et_emergency_number.setText(response.getString("EmergencyMobileNumber"));
+                        et_emergency_relationship.setText(response.getString("EmergencyRelationShip"));
+                    }
+
+                } catch (Exception e) {
+
+                }
+
+                pDialog.hide();
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.e(TAG, "Error: " + error.getMessage());
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                        dlgAlert.setMessage("Error while fetching data, please try again");
+                        dlgAlert.setPositiveButton("OK", null);
+                        dlgAlert.setCancelable(true);
+                        dlgAlert.create().show();
+                    }
+                });
+                pDialog.hide();
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+
+        AppController.getInstance().addToRequestQueue(jsonObjReq, tag_json_obj);
+
     }
 
 
