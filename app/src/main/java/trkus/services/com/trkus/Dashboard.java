@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 
 import trkus.commonmodule.WebpageLoad;
+import trkus.customermodule.CustomerProfileEdit;
 import trkus.customermodule.HomePage;
 import trkus.customermodule.customerorder.CustomeOrderPage;
 import trkus.customermodule.favouriteContacts.FavouiteContacts;
@@ -68,6 +69,11 @@ public class Dashboard extends AppCompatActivity
         int id = item.getItemId();
 //
         if (id == R.id.nav_profile) {
+            fragment = new CustomerProfileEdit();
+            FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+            tx.replace(R.id.flContent, fragment, "CustomerProfile");
+            tx.commit();
+            tx.addToBackStack(null);
 //            session.logoutUser();
         } else if (id == R.id.nav_orderhistory) {
 
