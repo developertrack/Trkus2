@@ -9,10 +9,10 @@ import android.widget.FrameLayout;
 
 public class UserTypeSelection extends AppCompatActivity {
 
-    FrameLayout customer,seller;
-    Button btn_confirm,btn_previous;
+    FrameLayout customer, seller;
+    Button btn_confirm, btn_previous;
     Intent intent;
-    String UserTypeId,MobileNumber;
+    String UserTypeId, MobileNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,8 +20,8 @@ public class UserTypeSelection extends AppCompatActivity {
         setContentView(R.layout.usertype);
 
         intent = getIntent();
-        UserTypeId=intent.getStringExtra("UserTypeId");
-        MobileNumber=intent.getStringExtra("MobileNumber");
+        UserTypeId = intent.getStringExtra("UserTypeId");
+        MobileNumber = intent.getStringExtra("MobileNumber");
 
         btn_previous = findViewById(R.id.btn_previous);
         btn_confirm = findViewById(R.id.btn_confirm);
@@ -31,9 +31,9 @@ public class UserTypeSelection extends AppCompatActivity {
         seller.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent verification=new Intent(UserTypeSelection.this,UserDetailForm.class);
-                verification.putExtra("MobileNumber",MobileNumber);
-                verification.putExtra("UserTypeId","1");
+                Intent verification = new Intent(UserTypeSelection.this, UserDetailForm.class);
+                verification.putExtra("MobileNumber", MobileNumber);
+                verification.putExtra("UserTypeId", "1");
                 startActivity(verification);
             }
         });
@@ -41,9 +41,9 @@ public class UserTypeSelection extends AppCompatActivity {
         customer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent verification=new Intent(UserTypeSelection.this,UserDetailForm.class);
-                verification.putExtra("MobileNumber",MobileNumber);
-                verification.putExtra("UserTypeId","2");
+                Intent verification = new Intent(UserTypeSelection.this, UserDetailForm.class);
+                verification.putExtra("MobileNumber", MobileNumber);
+                verification.putExtra("UserTypeId", "2");
                 startActivity(verification);
             }
         });

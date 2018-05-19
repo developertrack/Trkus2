@@ -28,19 +28,13 @@ public class ProductSellerAdapter extends ArrayAdapter<ProductSeller> {
     ProductSeller getdata;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
-    class ViewHolder {
-        TextView seller_name_title, seller_address,seller_contact,seller_call,seller_order;
-        NetworkImageView seller_icon;
-    }
-
     public ProductSellerAdapter(FragmentActivity activity, int resource, ArrayList<ProductSeller> data) {
         super(activity, resource, data);
 
-        context=activity;
-        layoutResourceId=resource;
-        dataget=data;
+        context = activity;
+        layoutResourceId = resource;
+        dataget = data;
     }
-
 
     @Override
     public int getCount() {
@@ -77,7 +71,7 @@ public class ProductSellerAdapter extends ArrayAdapter<ProductSeller> {
             holder.seller_name_title = convertView
                     .findViewById(R.id.seller_name_title);
 
-            holder. seller_name_title .setTag(position);
+            holder.seller_name_title.setTag(position);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -87,7 +81,7 @@ public class ProductSellerAdapter extends ArrayAdapter<ProductSeller> {
         pos = position;
 
         holder.seller_name_title.setText(getdata.getFirmName());
-        holder.seller_address.setText(getdata.getAddress1()+" "+getdata.getPinCode());
+        holder.seller_address.setText(getdata.getAddress1() + " " + getdata.getPinCode());
         holder.seller_contact.setText(getdata.getMobileNumber());
         holder.seller_icon.setImageUrl(getdata.getImage1(), imageLoader);
 
@@ -101,6 +95,11 @@ public class ProductSellerAdapter extends ArrayAdapter<ProductSeller> {
 
         return convertView;
 
+    }
+
+    class ViewHolder {
+        TextView seller_name_title, seller_address, seller_contact, seller_call, seller_order;
+        NetworkImageView seller_icon;
     }
 
 }

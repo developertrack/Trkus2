@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -38,9 +37,9 @@ public class LoginActivity extends AppCompatActivity {
     String tag_json_obj = "json_obj_req";
     ProgressDialog pDialog;
     JSONObject data_jobject;
-    String UserTypeId,OTP,MobileNumber,UserId;
+    String UserTypeId, OTP, MobileNumber, UserId;
     String TAG = "LoginActivity_TAG";
-    String result="NA",response_string;
+    String result = "NA", response_string;
     JSONObject data;
     UserSessionManager session;
 
@@ -49,30 +48,30 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        btn_next=(Button)findViewById(R.id.btn_next);
-        mob_no=(EditText)findViewById(R.id.mob_no);
-        session=new UserSessionManager(LoginActivity.this);
+        btn_next = findViewById(R.id.btn_next);
+        mob_no = findViewById(R.id.mob_no);
+        session = new UserSessionManager(LoginActivity.this);
 
-        if(session.getKeyUserType()==null){
+        if (session.getKeyUserType() == null) {
 
-        }else{
+        } else {
 
-            if(session.getKeyUserType().equals("1")){
+            if (session.getKeyUserType().equals("1")) {
                 Intent verification = new Intent(LoginActivity.this, SellerDashboard.class);
                 verification.putExtra("MobileNumber", session.getKeyNumber());
                 verification.putExtra("UserTypeId", session.getKeyUserType());
                 verification.putExtra("UserId", session.getKeyUserid());
-                Log.e("session.getKeyUserid()",session.getKeyUserid());
+                Log.e("session.getKeyUserid()", session.getKeyUserid());
                 verification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(verification);
             }
 
-            if(session.getKeyUserType().equals("2")) {
+            if (session.getKeyUserType().equals("2")) {
                 Intent verification = new Intent(LoginActivity.this, Dashboard.class);
                 verification.putExtra("MobileNumber", session.getKeyNumber());
                 verification.putExtra("UserTypeId", session.getKeyUserType());
                 verification.putExtra("UserId", session.getKeyUserid());
-                Log.e("session.getKeyUserid()",session.getKeyUserid());
+                Log.e("session.getKeyUserid()", session.getKeyUserid());
                 verification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(verification);
             }
@@ -81,9 +80,9 @@ public class LoginActivity extends AppCompatActivity {
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mob_no.getText().length()>1 && mob_no.getText().length()<10 ){
-                    Toast.makeText(LoginActivity.this,"Please enter correct number",Toast.LENGTH_LONG).show();
-                }else{
+                if (mob_no.getText().length() > 1 && mob_no.getText().length() < 10) {
+                    Toast.makeText(LoginActivity.this, "Please enter correct number", Toast.LENGTH_LONG).show();
+                } else {
                     confirmDialog();
                 }
             }
@@ -95,10 +94,10 @@ public class LoginActivity extends AppCompatActivity {
         final Dialog dialog = new Dialog(LoginActivity.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.alert_number_verify);
-        TextView txt_mobile=(TextView)dialog.findViewById(R.id.txt_mobile);
-        Button btn_confirm=(Button)dialog.findViewById(R.id.btn_confirm);
-        Button btn_edit=(Button)dialog.findViewById(R.id.btn_edit);
-        txt_mobile.setText("your mobile number is "+ mob_no.getText().toString());
+        TextView txt_mobile = dialog.findViewById(R.id.txt_mobile);
+        Button btn_confirm = dialog.findViewById(R.id.btn_confirm);
+        Button btn_edit = dialog.findViewById(R.id.btn_edit);
+        txt_mobile.setText("your mobile number is " + mob_no.getText().toString());
         btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
 
         }
 
-        Log.e("data_jobject",data_jobject.toString());
+        Log.e("data_jobject", data_jobject.toString());
 
         pDialog = new ProgressDialog(LoginActivity.this);
         pDialog.setMessage("Loading...");
@@ -139,12 +138,12 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
 
                     @Override
-                    public void onResponse( JSONObject response) {
+                    public void onResponse(JSONObject response) {
                         Log.e(TAG, response.toString());
                         try {
                             String Status = response.getString("Status");
-                            response_string=response.toString();
-                            data=response;
+                            response_string = response.toString();
+                            data = response;
                             if (Status.equals("false")) {
 
                                 runOnUiThread(new Runnable() {
@@ -166,13 +165,13 @@ public class LoginActivity extends AppCompatActivity {
                                 MobileNumber = data.getString("MobileNumber");
                                 OTP = data.getString("OTP");
                                 UserTypeId = data.getString("UserTypeId");
-                                UserId=data.getString("UserId");
-                                    Intent verify = new Intent(LoginActivity.this, Phoneverification.class);
-                                    verify.putExtra("MobileNumber", MobileNumber);
-                                    verify.putExtra("OTP", OTP);
-                                    verify.putExtra("UserTypeId", UserTypeId);
-                                    verify.putExtra("UserId", UserId);
-                                    startActivity(verify);
+                                UserId = data.getString("UserId");
+                                Intent verify = new Intent(LoginActivity.this, Phoneverification.class);
+                                verify.putExtra("MobileNumber", MobileNumber);
+                                verify.putExtra("OTP", OTP);
+                                verify.putExtra("UserTypeId", UserTypeId);
+                                verify.putExtra("UserId", UserId);
+                                startActivity(verify);
 
                             }
 
@@ -201,7 +200,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;

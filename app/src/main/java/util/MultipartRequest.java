@@ -28,17 +28,17 @@ public class MultipartRequest extends Request<String> {
     private HttpEntity httpEntity = null;
 
 
-    public MultipartRequest(int method,MultipartRequestParams params, String url,Response.Listener<String> listener, Response.ErrorListener errorListener) {
+    public MultipartRequest(int method, MultipartRequestParams params, String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
         super(method, url, errorListener);
         this.params = params;
         this.mListener = listener;
     }
 
     @Override
-    public byte[] getBody() throws AuthFailureError {
+    public byte[] getBody() {
         // TODO Auto-generated method stub
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        if(params != null) {
+        if (params != null) {
             httpEntity = params.getEntity();
             try {
                 httpEntity.writeTo(baos);

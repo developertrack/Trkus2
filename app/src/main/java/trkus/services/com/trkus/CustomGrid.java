@@ -13,12 +13,12 @@ import com.android.volley.toolbox.NetworkImageView;
 import util.AppController;
 
 public class CustomGrid extends BaseAdapter {
-    private Context mContext;
     private final String[] web;
     private final String[] Imageid;
     ImageLoader img_loader;
+    private Context mContext;
 
-    public CustomGrid(Context c,String[] web,String[] Imageid ) {
+    public CustomGrid(Context c, String[] web, String[] Imageid) {
         mContext = c;
         this.Imageid = Imageid;
         this.web = web;

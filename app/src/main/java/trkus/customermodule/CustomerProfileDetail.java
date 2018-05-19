@@ -49,7 +49,7 @@ public class CustomerProfileDetail extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+        getActivity().setTitle("My Profile");
         View view = inflater.inflate(R.layout.customer_profile_detail, container, false);
 
         btn_save = view.findViewById(R.id.btn_save);
@@ -134,6 +134,7 @@ public class CustomerProfileDetail extends Fragment {
                                 dlgAlert.create().show();
                             }
                         });
+                        pDialog.dismiss();
 
                     } else {
 
@@ -154,6 +155,7 @@ public class CustomerProfileDetail extends Fragment {
                         ename.setText(response.getString("EmergencyName"));
                         emobile.setText(response.getString("EmergencyMobileNumber"));
                         eraltionship.setText(response.getString("EmergencyRelationShip"));
+                        pDialog.dismiss();
                     }
 
                 } catch (Exception e) {

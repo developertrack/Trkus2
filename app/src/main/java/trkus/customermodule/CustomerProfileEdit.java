@@ -69,17 +69,18 @@ public class CustomerProfileEdit extends Fragment {
     String TAG = "Edit_Customer_TAG";
     Calendar myCalendar;
     DatePickerDialog.OnDateSetListener date;
-    private String userChoosenTask;
     String tag_json_obj = "json_obj_req";
     String result = "NA", response_string;
     JSONObject data;
+    private String userChoosenTask;
+
     private static boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+        getActivity().setTitle("My Profile");
         View view = inflater.inflate(R.layout.activity_customer_profile_edit, container, false);
 
         et_full_name = view.findViewById(R.id.et_full_name);
@@ -123,7 +124,6 @@ public class CustomerProfileEdit extends Fragment {
         pDialog = new ProgressDialog(getActivity());
         pDialog.setMessage("Loading...");
         pDialog.show();
-        getUserDetail(session.getKeyUserid());
         myCalendar = Calendar.getInstance();
 
         date = new DatePickerDialog.OnDateSetListener() {
@@ -240,10 +240,6 @@ public class CustomerProfileEdit extends Fragment {
             }
         });
 
-        getStateName();
-        getCityName();
-        getCountryName();
-
         gender.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
@@ -334,6 +330,10 @@ public class CustomerProfileEdit extends Fragment {
                         }).create().show();
             }
         });
+
+        getStateName();
+        getCityName();
+        getCountryName();
 
 
         return view;
@@ -479,7 +479,9 @@ public class CustomerProfileEdit extends Fragment {
                             }
 
                             spinner_country = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, country_StateName);
-                            pDialog.dismiss();
+
+                            getUserDetail(session.getKeyUserid());
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -496,11 +498,13 @@ public class CustomerProfileEdit extends Fragment {
                 VolleyLog.d(Tag, "Error: " + error.getMessage());
                 Toast.makeText(getActivity(),
                         error.getMessage(), Toast.LENGTH_SHORT).show();
-                pDialog.dismiss();
+
             }
         });
 
         AppController.getInstance().addToRequestQueue(req);
+
+
     }
 
     private void getCityName() {
@@ -856,32 +860,8 @@ public class CustomerProfileEdit extends Fragment {
         return true;
     }
 
-    @SuppressLint("ValidFragment")
-    public class DatePickerFragment extends DialogFragment
-            implements DatePickerDialog.OnDateSetListener {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Calendar c = Calendar.getInstance();
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-            DatePickerDialog dialog = new DatePickerDialog(getActivity(), this, year, month, day);
-            dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
-            return dialog;
-        }
-
-        public void onDateSet(DatePicker view, int year, int month, int day) {
-            et_dateofbirth.setText(year + "-" + (month + 1) + "-" + day);
-
-        }
-    }
-
     public void getUserDetail(String id) {
 
-        pDialog = new ProgressDialog(getActivity());
-        pDialog.setMessage("Loading...");
-        pDialog.show();
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 UrlConstant.GET_Customer_Profile_Update + id, new Response.Listener<JSONObject>() {
@@ -907,15 +887,18 @@ public class CustomerProfileEdit extends Fragment {
                                 dlgAlert.setPositiveButton("OK", null);
                                 dlgAlert.setCancelable(true);
                                 dlgAlert.create().show();
+
                             }
                         });
+
+                        pDialog.dismiss();
 
                     } else {
 
                         et_full_name.setText(response.getString("Name"));
                         gender.setText(response.getString("Gender"));
                         et_dateofbirth.setText(response.getString("DOB"));
-                        et_email.setText(response.getString("email"));
+                        et_email.setText(response.getString("EmailId"));
                         et_aadhar.setText(response.getString("AdharNumber"));
                         et_blood_group.setText(response.getString("Bloodgroup"));
                         et_marital_status.setText(response.getString("MaritalStatus"));
@@ -930,13 +913,14 @@ public class CustomerProfileEdit extends Fragment {
                         et_emergency_name.setText(response.getString("EmergencyName"));
                         et_emergency_number.setText(response.getString("EmergencyMobileNumber"));
                         et_emergency_relationship.setText(response.getString("EmergencyRelationShip"));
+
                     }
 
                 } catch (Exception e) {
-
+                    pDialog.hide();
                 }
 
-                pDialog.hide();
+                pDialog.dismiss();
             }
         }, new Response.ErrorListener() {
 
@@ -966,6 +950,27 @@ public class CustomerProfileEdit extends Fragment {
 
         AppController.getInstance().addToRequestQueue(jsonObjReq, tag_json_obj);
 
+    }
+
+    @SuppressLint("ValidFragment")
+    public class DatePickerFragment extends DialogFragment
+            implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+            DatePickerDialog dialog = new DatePickerDialog(getActivity(), this, year, month, day);
+            dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
+            return dialog;
+        }
+
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            et_dateofbirth.setText(year + "-" + (month + 1) + "-" + day);
+
+        }
     }
 
 

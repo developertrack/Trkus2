@@ -1,16 +1,34 @@
 package trkus.customermodule.favouriteContacts;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import trkus.services.com.trkus.R;
+import util.AppController;
+import util.UrlConstant;
+import util.UserSessionManager;
 
 public class FavouriteContactAdapter extends ArrayAdapter<FavouriteContactData> {
 
@@ -20,6 +38,10 @@ public class FavouriteContactAdapter extends ArrayAdapter<FavouriteContactData> 
     FavouriteContactAdapter.ViewHolder holder;
     int pos = 0;
     FavouriteContactData getdata;
+    UserSessionManager session;
+    JSONObject data_jobject;
+    String Tag = "Dashboard";
+    ProgressDialog pDialog;
 
     public FavouriteContactAdapter(FragmentActivity activity, int resource, ArrayList<FavouriteContactData> data) {
         super(activity, resource, data);
@@ -27,6 +49,8 @@ public class FavouriteContactAdapter extends ArrayAdapter<FavouriteContactData> 
         context = activity;
         layoutResourceId = resource;
         dataget = data;
+        session = new UserSessionManager(context);
+        pDialog = new ProgressDialog(context);
     }
 
     @Override
@@ -80,6 +104,67 @@ public class FavouriteContactAdapter extends ArrayAdapter<FavouriteContactData> 
         holder.mobilenumber.setText(getdata.getMobileNumber());
         holder.address.setText(getdata.getAddress());
         holder.firmtype.setText(getdata.getFirmName());
+
+        holder.btn_call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + getdata.getMobileNumber()));
+                context.startActivity(intent);
+            }
+        });
+
+        holder.btn_remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pDialog.setMessage("Loading...");
+                pDialog.show();
+
+                JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                        UrlConstant.GET_Customer_RemoveFavouriteContact_Url + getdata.getId(), new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.e(Tag, response.toString());
+                        try {
+                            String Status = response.getString("Status");
+
+                            if (Status.equals("false")) {
+
+                                Toast.makeText(context, response.getString("Message"), Toast.LENGTH_LONG).show();
+
+
+                            } else {
+                                Toast.makeText(context, response.getString("Message"), Toast.LENGTH_LONG).show();
+                                dataget.remove(pos);
+                                notifyDataSetChanged();
+                            }
+                            pDialog.dismiss();
+                        } catch (Exception e) {
+
+                        }
+
+                        pDialog.hide();
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        VolleyLog.e(Tag, "Error: " + error.getMessage());
+
+                        pDialog.hide();
+                    }
+                }) {
+                    @Override
+                    public Map<String, String> getHeaders() {
+                        HashMap<String, String> headers = new HashMap<String, String>();
+                        headers.put("Content-Type", "application/json; charset=utf-8");
+                        return headers;
+                    }
+                };
+
+                AppController.getInstance().addToRequestQueue(jsonObjReq, Tag);
+            }
+        });
 
         return convertView;
 

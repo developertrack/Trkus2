@@ -83,35 +83,35 @@ public class MultipartRequestParams {
         HttpEntity entity = null;
         MultipartEntity multipartEntity = new MultipartEntity();
 
-            // Add string params
-            int curretItem = 0;
-            int lastItem = urlParams.entrySet().size() -1;
-            for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
-                boolean isLast = curretItem == lastItem;
-                if(!fileParams.isEmpty()){
-                    isLast = false;
-                }
-                multipartEntity.addPart(entry.getKey(), entry.getValue(),isLast);
-                curretItem ++;
+        // Add string params
+        int curretItem = 0;
+        int lastItem = urlParams.entrySet().size() - 1;
+        for (ConcurrentHashMap.Entry<String, String> entry : urlParams.entrySet()) {
+            boolean isLast = curretItem == lastItem;
+            if (!fileParams.isEmpty()) {
+                isLast = false;
             }
+            multipartEntity.addPart(entry.getKey(), entry.getValue(), isLast);
+            curretItem++;
+        }
 
-            if(!fileParams.isEmpty()) {
-                // Add file params
-                int currentIndex = 0;
-                int lastIndex = fileParams.entrySet().size() - 1;
-                for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
-                    FileWrapper file = entry.getValue();
-                    if (file.inputStream != null) {
-                        boolean isLast = currentIndex == lastIndex;
-                        if (file.contentType != null) {
-                            multipartEntity.addPart(entry.getKey(), file.getFileName(), file.inputStream, file.contentType, isLast);
-                        } else {
-                            multipartEntity.addPart(entry.getKey(), file.getFileName(), file.inputStream, isLast);
-                        }
+        if (!fileParams.isEmpty()) {
+            // Add file params
+            int currentIndex = 0;
+            int lastIndex = fileParams.entrySet().size() - 1;
+            for (ConcurrentHashMap.Entry<String, FileWrapper> entry : fileParams.entrySet()) {
+                FileWrapper file = entry.getValue();
+                if (file.inputStream != null) {
+                    boolean isLast = currentIndex == lastIndex;
+                    if (file.contentType != null) {
+                        multipartEntity.addPart(entry.getKey(), file.getFileName(), file.inputStream, file.contentType, isLast);
+                    } else {
+                        multipartEntity.addPart(entry.getKey(), file.getFileName(), file.inputStream, isLast);
                     }
-                    currentIndex++;
                 }
+                currentIndex++;
             }
+        }
 
         entity = multipartEntity;
         return entity;

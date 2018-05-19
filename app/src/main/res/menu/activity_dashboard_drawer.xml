@@ -29,6 +29,10 @@
             android:icon="@drawable/aboutus"
             android:title="Favourite Contacts" />
         <item
+            android:id="@+id/nav_impdocuments"
+            android:icon="@drawable/appointment"
+            android:title="Important Documents" />
+        <item
             android:id="@+id/nav_notification"
             android:icon="@drawable/notification"
             android:title="Notifications" />
@@ -42,7 +46,7 @@
                 android:id="@+id/nav_share"
                 android:icon="@drawable/share"
                 android:title="Share" />
-           <!-- https://play.google.com/store/apps/details?id=com.medjio.medicalhealthcart-->
+            <!-- https://play.google.com/store/apps/details?id=com.medjio.medicalhealthcart-->
             <item
                 android:id="@+id/nav_aboutus"
                 android:icon="@drawable/aboutus"

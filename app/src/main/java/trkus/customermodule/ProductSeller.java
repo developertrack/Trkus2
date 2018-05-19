@@ -1,7 +1,19 @@
 package trkus.customermodule;
 
 public class ProductSeller {
-    String SellerUserId,Industry,CategoryOfBusiness,FirmName,MobileNumber,Address1,PinCode,Image1;
+    String SellerUserId, Industry, CategoryOfBusiness, FirmName, MobileNumber, Address1, PinCode, Image1;
+
+    public ProductSeller(String s, String s1, String categoryOfBusiness, String s2, String s3, String s4, String s5, String s6) {
+
+        SellerUserId = s;
+        Industry = s1;
+        this.CategoryOfBusiness = categoryOfBusiness;
+        FirmName = s2;
+        MobileNumber = s3;
+        PinCode = s5;
+        Address1 = s4;
+        Image1 = s6;
+    }
 
     public String getSellerUserId() {
         return SellerUserId;
@@ -65,17 +77,5 @@ public class ProductSeller {
 
     public void setImage1(String image1) {
         Image1 = image1;
-    }
-
-    public ProductSeller(String s, String s1, String categoryOfBusiness, String s2, String s3, String s4, String s5, String s6) {
-
-        SellerUserId=s;
-        Industry=s1;
-        this.CategoryOfBusiness=categoryOfBusiness;
-        FirmName=s2;
-        MobileNumber=s3;
-        PinCode=s5;
-        Address1=s4;
-        Image1=s6;
     }
 }

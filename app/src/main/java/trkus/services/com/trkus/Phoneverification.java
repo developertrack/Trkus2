@@ -43,13 +43,13 @@ import util.UserSessionManager;
 public class Phoneverification extends AppCompatActivity {
 
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
-    String UserTypeId,OTP,MobileNumber,otp,UserId;
+    String UserTypeId, OTP, MobileNumber, otp, UserId;
     EditText input_otp;
-    TextView counter,resend,mob_text;
+    TextView counter, resend, mob_text;
     String TAG = "MessageVerificationActivity_TAG";
     ProgressDialog pDialog;
-    JSONObject data_jobject,data_jobject1,data_jobject2;
-    Button btn_confirm,btn_previous;
+    JSONObject data_jobject, data_jobject1, data_jobject2;
+    Button btn_confirm, btn_previous;
     Intent intent;
     UserSessionManager session;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -61,6 +61,7 @@ public class Phoneverification extends AppCompatActivity {
             }
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +70,7 @@ public class Phoneverification extends AppCompatActivity {
         if (checkAndRequestPermissions()) {
             // carry on the normal flow, as the case of  permissions  granted.
         }
-        session=new UserSessionManager(Phoneverification.this);
+        session = new UserSessionManager(Phoneverification.this);
         input_otp = findViewById(R.id.input_otp);
         counter = findViewById(R.id.counter);
         resend = findViewById(R.id.resend);
@@ -78,12 +79,12 @@ public class Phoneverification extends AppCompatActivity {
         btn_confirm = findViewById(R.id.btn_confirm);
 
         intent = getIntent();
-        UserTypeId=intent.getStringExtra("UserTypeId");
-        OTP=intent.getStringExtra("OTP");
-        MobileNumber=intent.getStringExtra("MobileNumber");
-        UserId=intent.getStringExtra("UserId");
+        UserTypeId = intent.getStringExtra("UserTypeId");
+        OTP = intent.getStringExtra("OTP");
+        MobileNumber = intent.getStringExtra("MobileNumber");
+        UserId = intent.getStringExtra("UserId");
 
-        mob_text.setText("You will receive an one time password on your mobile number " +MobileNumber);
+        mob_text.setText("You will receive an one time password on your mobile number " + MobileNumber);
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,9 +97,9 @@ public class Phoneverification extends AppCompatActivity {
             public void onClick(View v) {
                 otp = input_otp.getText().toString().trim();
 
-                if (otp.isEmpty() || otp.length()<6) {
+                if (otp.isEmpty() || otp.length() < 6) {
 
-                    Toast.makeText(Phoneverification.this,"Enter correct OTP",Toast.LENGTH_LONG).show();
+                    Toast.makeText(Phoneverification.this, "Enter correct OTP", Toast.LENGTH_LONG).show();
 
                 } else {
                     verifyUser();
@@ -127,8 +128,7 @@ public class Phoneverification extends AppCompatActivity {
     }
 
 
-
-    public void verifyUser(){
+    public void verifyUser() {
 
         String tag_json_obj = "json_obj_req";
 
@@ -144,7 +144,7 @@ public class Phoneverification extends AppCompatActivity {
         } catch (Exception e) {
 
         }
-        Log.e("Verify OTP",data_jobject2.toString());
+        Log.e("Verify OTP", data_jobject2.toString());
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
                 UrlConstant.VERIFY_URL, data_jobject2,
@@ -153,10 +153,10 @@ public class Phoneverification extends AppCompatActivity {
                     @Override
                     public void onResponse(final JSONObject response) {
                         Log.e(TAG, response.toString());
-                        try{
-                            String Status=response.getString("Status");
+                        try {
+                            String Status = response.getString("Status");
 
-                            if(Status.equals("false")){
+                            if (Status.equals("false")) {
 
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -173,14 +173,14 @@ public class Phoneverification extends AppCompatActivity {
                                     }
                                 });
 
-                            }else{
-                                if(UserTypeId.equals("0")) {
+                            } else {
+                                if (UserTypeId.equals("0")) {
                                     Intent verification = new Intent(Phoneverification.this, UserTypeSelection.class);
                                     verification.putExtra("MobileNumber", MobileNumber);
                                     verification.putExtra("UserTypeId", UserTypeId);
                                     startActivity(verification);
-                                }else{
-                                    if(UserTypeId.equals("1")) {
+                                } else {
+                                    if (UserTypeId.equals("1")) {
                                         Intent verification = new Intent(Phoneverification.this, SellerDashboard.class);
                                         verification.putExtra("MobileNumber", MobileNumber);
                                         verification.putExtra("UserTypeId", UserTypeId);
@@ -191,7 +191,7 @@ public class Phoneverification extends AppCompatActivity {
                                         verification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(verification);
                                     }
-                                    if(UserTypeId.equals("2")) {
+                                    if (UserTypeId.equals("2")) {
                                         Intent verification = new Intent(Phoneverification.this, Dashboard.class);
                                         verification.putExtra("MobileNumber", MobileNumber);
                                         verification.putExtra("UserTypeId", UserTypeId);
@@ -205,7 +205,7 @@ public class Phoneverification extends AppCompatActivity {
                                 }
                             }
 
-                        }catch (Exception e){
+                        } catch (Exception e) {
 
                         }
 
@@ -221,11 +221,11 @@ public class Phoneverification extends AppCompatActivity {
                     public void run() {
 
 
-                            AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Phoneverification.this);
-                            dlgAlert.setMessage("Error while logging in, please try again");
-                            dlgAlert.setPositiveButton("OK", null);
-                            dlgAlert.setCancelable(true);
-                            dlgAlert.create().show();
+                        AlertDialog.Builder dlgAlert = new AlertDialog.Builder(Phoneverification.this);
+                        dlgAlert.setMessage("Error while logging in, please try again");
+                        dlgAlert.setPositiveButton("OK", null);
+                        dlgAlert.setCancelable(true);
+                        dlgAlert.create().show();
 
                     }
                 });
@@ -248,7 +248,7 @@ public class Phoneverification extends AppCompatActivity {
     }
 
 
-    public void ResendOtp(){
+    public void ResendOtp() {
 
         String tag_json_obj = "json_obj_req";
 
@@ -263,7 +263,7 @@ public class Phoneverification extends AppCompatActivity {
 
         }
 
-        Log.e("Resend OTP",data_jobject1.toString());
+        Log.e("Resend OTP", data_jobject1.toString());
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
                 UrlConstant.RESEND_OTP, data_jobject1,
@@ -272,10 +272,10 @@ public class Phoneverification extends AppCompatActivity {
                     @Override
                     public void onResponse(final JSONObject response) {
                         Log.e(TAG, response.toString());
-                        try{
-                            String Status=response.getString("Status");
+                        try {
+                            String Status = response.getString("Status");
 
-                            if(Status.equals("false")){
+                            if (Status.equals("false")) {
 
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -292,13 +292,13 @@ public class Phoneverification extends AppCompatActivity {
                                     }
                                 });
 
-                            }else{
-                                otp=response.getString("OTP");
-                                input_otp.setText(otp);
+                            } else {
+                                otp = response.getString("OTP");
+//                                input_otp.setText(otp);
 
                             }
 
-                        }catch (Exception e){
+                        } catch (Exception e) {
 
                         }
 
@@ -337,7 +337,7 @@ public class Phoneverification extends AppCompatActivity {
     }
 
 
-    private  boolean checkAndRequestPermissions() {
+    private boolean checkAndRequestPermissions() {
         int permissionSendMessage = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.SEND_SMS);
 

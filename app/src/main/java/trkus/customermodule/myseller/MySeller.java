@@ -37,21 +37,22 @@ public class MySeller extends Fragment {
 
 
     Fragment fragment = null;
-    String[] SellerUserId,Industry,CategoryOfBusiness,FirmName,MobileNumber,Address1,PinCode,Image1;
+    String[] SellerUserId, Industry, CategoryOfBusiness, FirmName, MobileNumber, Address1, PinCode, Image1;
     ProgressDialog pDialog;
     String Tag = "Dashboard";
     ListView sellerlist;
-    ArrayList<ProductSeller> seller_data =null;
+    ArrayList<ProductSeller> seller_data = null;
     ProductSellerAdapter selleradapter;
-    String CategoryName,strtext;
+    String CategoryName, strtext;
     UserSessionManager session;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         getActivity().setTitle("My Sellers");
         View view = inflater.inflate(R.layout.fragment_product_seller_listing, container, false);
         sellerlist = view.findViewById(R.id.sellerlist);
-        session=new UserSessionManager(getActivity());
+        session = new UserSessionManager(getActivity());
         getStore(session.getKeyUserid());
         pDialog = new ProgressDialog(getActivity());
         pDialog.setMessage("Loading...");
@@ -82,7 +83,7 @@ public class MySeller extends Fragment {
                 bundle.putString("Address1", Address1[position]);
                 bundle.putString("PinCode", PinCode[position]);
                 bundle.putString("Image1", Image1[position]);
-                bundle.putString("CategoryName",CategoryName);
+                bundle.putString("CategoryName", CategoryName);
 
                 fragment = new ProductSellerOrderPage();
                 fragment.setArguments(bundle);
@@ -99,10 +100,8 @@ public class MySeller extends Fragment {
     }
 
 
-
-
     public void getStore(String id) {
-        JsonArrayRequest req = new JsonArrayRequest(UrlConstant.GET_Favourite_Seller+id,
+        JsonArrayRequest req = new JsonArrayRequest(UrlConstant.GET_Favourite_Seller + id,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -132,10 +131,10 @@ public class MySeller extends Fragment {
                                 PinCode[i] = person.getString("PinCode");
                                 Image1[i] = person.getString("Image1");
 
-                                seller_data.add(new ProductSeller(SellerUserId[i],Industry[i],CategoryOfBusiness[i],FirmName[i],
-                                        MobileNumber[i],Address1[i],PinCode[i],Image1[i]));
+                                seller_data.add(new ProductSeller(SellerUserId[i], Industry[i], CategoryOfBusiness[i], FirmName[i],
+                                        MobileNumber[i], Address1[i], PinCode[i], Image1[i]));
                             }
-                            selleradapter=new ProductSellerAdapter(getActivity(), R.layout.seller_layout_listing_adapter,seller_data);
+                            selleradapter = new ProductSellerAdapter(getActivity(), R.layout.seller_layout_listing_adapter, seller_data);
                             sellerlist.setAdapter(selleradapter);
                             selleradapter.notifyDataSetChanged();
 

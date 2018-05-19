@@ -20,12 +20,10 @@ import java.util.Random;
  */
 public class MultipartEntity implements HttpEntity {
     private final static char[] MULTIPART_CHARS = "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
-
-    private String boundary = null;
-
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     boolean isSetLast = false;
     boolean isSetFirst = false;
+    private String boundary = null;
 
     public MultipartEntity() {
         final StringBuffer buf = new StringBuffer();
@@ -37,8 +35,8 @@ public class MultipartEntity implements HttpEntity {
 
     }
 
-    public void writeFirstBoundaryIfNeeds(){
-        if(!isSetFirst){
+    public void writeFirstBoundaryIfNeeds() {
+        if (!isSetFirst) {
             try {
                 out.write(("--" + boundary + "\r\n").getBytes());
             } catch (final IOException e) {
@@ -50,7 +48,7 @@ public class MultipartEntity implements HttpEntity {
     }
 
     public void writeLastBoundaryIfNeeds() {
-        if(isSetLast){
+        if (isSetLast) {
             return;
         }
 
@@ -63,14 +61,14 @@ public class MultipartEntity implements HttpEntity {
         isSetLast = true;
     }
 
-    public void addPart(final String key, final String value ,boolean isLast) {
+    public void addPart(final String key, final String value, boolean isLast) {
         writeFirstBoundaryIfNeeds();
         try {
-            out.write(("Content-Disposition: form-data; name=\"" +key+"\"\r\n\r\n").getBytes());
+            out.write(("Content-Disposition: form-data; name=\"" + key + "\"\r\n\r\n").getBytes());
             out.write(value.getBytes());
-            if(!isLast) {
+            if (!isLast) {
                 out.write(("\r\n--" + boundary + "\r\n").getBytes());
-            }else{
+            } else {
                 writeLastBoundaryIfNeeds();
             }
         } catch (final IOException e) {
@@ -78,15 +76,15 @@ public class MultipartEntity implements HttpEntity {
         }
     }
 
-    public void addPart(final String key, final String fileName, final InputStream fin, final boolean isLast){
+    public void addPart(final String key, final String fileName, final InputStream fin, final boolean isLast) {
         addPart(key, fileName, fin, "application/octet-stream", isLast);
     }
 
-    public void addPart(final String key, final String fileName, final InputStream fin, String type, final boolean isLast){
+    public void addPart(final String key, final String fileName, final InputStream fin, String type, final boolean isLast) {
         writeFirstBoundaryIfNeeds();
         try {
-            type = "Content-Type: "+type+"\r\n";
-            out.write(("Content-Disposition: form-data; name=\""+ key+"\"; filename=\"" + fileName + "\"\r\n").getBytes());
+            type = "Content-Type: " + type + "\r\n";
+            out.write(("Content-Disposition: form-data; name=\"" + key + "\"; filename=\"" + fileName + "\"\r\n").getBytes());
             out.write(type.getBytes());
             out.write("Content-Transfer-Encoding: binary\r\n\r\n".getBytes());
 
@@ -95,7 +93,7 @@ public class MultipartEntity implements HttpEntity {
             while ((l = fin.read(tmp)) != -1) {
                 out.write(tmp, 0, l);
             }
-            if(!isLast)
+            if (!isLast)
                 out.write(("\r\n--" + boundary + "\r\n").getBytes());
             else {
                 writeLastBoundaryIfNeeds();
@@ -157,7 +155,7 @@ public class MultipartEntity implements HttpEntity {
     }
 
     @Override
-    public void consumeContent() throws IOException,
+    public void consumeContent() throws
             UnsupportedOperationException {
         if (isStreaming()) {
             throw new UnsupportedOperationException(
@@ -166,7 +164,7 @@ public class MultipartEntity implements HttpEntity {
     }
 
     @Override
-    public InputStream getContent() throws IOException,
+    public InputStream getContent() throws
             UnsupportedOperationException {
         return new ByteArrayInputStream(out.toByteArray());
     }

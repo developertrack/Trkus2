@@ -2,7 +2,18 @@ package trkus.customermodule.customerorder;
 
 public class OrderData {
 
-    String SellerUserId,OrderId,Itemn,OrderDate,FirmName,FirmImage,OrderImage1;
+    String SellerUserId, OrderId, Itemn, OrderDate, FirmName, FirmImage, OrderImage1;
+
+    public OrderData(String s, String s1, String s2, String s3, String s4, String s5, String s6) {
+
+        this.SellerUserId = s;
+        this.OrderId = s1;
+        this.Itemn = s2;
+        this.OrderDate = s3;
+        this.FirmName = s4;
+        this.FirmImage = s5;
+        this.OrderImage1 = s6;
+    }
 
     public String getSellerUserId() {
         return SellerUserId;
@@ -58,16 +69,5 @@ public class OrderData {
 
     public void setOrderImage1(String orderImage1) {
         OrderImage1 = orderImage1;
-    }
-
-    public OrderData(String s, String s1, String s2, String s3, String s4, String s5, String s6) {
-
-        this.SellerUserId=s;
-        this.OrderId=s1;
-        this.Itemn=s2;
-        this.OrderDate=s3;
-        this.FirmName=s4;
-        this.FirmImage=s5;
-        this.OrderImage1=s6;
     }
 }

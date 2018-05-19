@@ -26,19 +26,13 @@ public class ServiceSellerAdapter extends ArrayAdapter<ServiceSeller> {
     ServiceSeller getdata;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
-    class ViewHolder {
-        TextView seller_name_title, seller_address,seller_contact,seller_call,seller_order;
-        NetworkImageView seller_icon;
-    }
-
     public ServiceSellerAdapter(FragmentActivity activity, int resource, ArrayList<ServiceSeller> data) {
         super(activity, resource, data);
 
-        context=activity;
-        layoutResourceId=resource;
-        dataget=data;
+        context = activity;
+        layoutResourceId = resource;
+        dataget = data;
     }
-
 
     @Override
     public int getCount() {
@@ -75,7 +69,7 @@ public class ServiceSellerAdapter extends ArrayAdapter<ServiceSeller> {
             holder.seller_name_title = convertView
                     .findViewById(R.id.seller_name_title);
 
-            holder. seller_name_title .setTag(position);
+            holder.seller_name_title.setTag(position);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -85,12 +79,17 @@ public class ServiceSellerAdapter extends ArrayAdapter<ServiceSeller> {
         pos = position;
 
         holder.seller_name_title.setText(getdata.getFirmName());
-        holder.seller_address.setText(getdata.getAddress1()+" "+getdata.getPinCode());
+        holder.seller_address.setText(getdata.getAddress1() + " " + getdata.getPinCode());
         holder.seller_contact.setText(getdata.getMobileNumber());
         holder.seller_icon.setImageUrl(getdata.getImage1(), imageLoader);
 
         return convertView;
 
+    }
+
+    class ViewHolder {
+        TextView seller_name_title, seller_address, seller_contact, seller_call, seller_order;
+        NetworkImageView seller_icon;
     }
 
 }

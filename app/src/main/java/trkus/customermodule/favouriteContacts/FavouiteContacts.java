@@ -42,7 +42,7 @@ import static util.AppController.TAG;
 public class FavouiteContacts extends Fragment {
 
     Fragment fragment = null;
-    String[] Name, Address, FirmName, MobileNumber;
+    String[] Name, Address, FirmName, MobileNumber, Id;
     ProgressDialog pDialog;
     String Tag = "Dashboard";
     ListView sellerlist;
@@ -309,7 +309,7 @@ public class FavouiteContacts extends Fragment {
                         Address = new String[response.length()];
                         FirmName = new String[response.length()];
                         MobileNumber = new String[response.length()];
-
+                        Id = new String[response.length()];
 //                        Name,Address,FirmName,MobileNumber
 
                         try {
@@ -322,9 +322,10 @@ public class FavouiteContacts extends Fragment {
                                 Address[i] = person.getString("Address");
                                 FirmName[i] = person.getString("FirmName");
                                 MobileNumber[i] = person.getString("MobileNumber");
+                                Id[i] = person.getString("Id");
 
                                 seller_data.add(new FavouriteContactData(Name[i], Address[i], FirmName[i],
-                                        MobileNumber[i]));
+                                        MobileNumber[i], Id[i]));
                             }
                             selleradapter = new FavouriteContactAdapter(getActivity(), R.layout.favouritecontact_adapter, seller_data);
                             sellerlist.setAdapter(selleradapter);
@@ -357,8 +358,6 @@ public class FavouiteContacts extends Fragment {
 //        "Message": "Sucess!",
 //            "Status": true
 //    }
-
-
 
 
 }

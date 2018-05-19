@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -24,6 +25,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import trkus.customermodule.bookappointment.BookAppointmentFragment;
 import trkus.services.com.trkus.R;
 import util.AppController;
 import util.UrlConstant;
@@ -33,18 +35,18 @@ public class ServiceSellerListing extends Fragment {
 
 
     Fragment fragment = null;
-    String[] SellerUserId,Industry,CategoryOfBusiness,FirmName,MobileNumber,Address1,PinCode,Image1;
+    String[] SellerUserId, Industry, CategoryOfBusiness, FirmName, MobileNumber, Address1, PinCode, Image1;
     ProgressDialog pDialog;
     String Tag = "Dashboard";
     ListView sellerlist;
     ArrayList<ServiceSeller> seller_data = null;
     ServiceSellerAdapter selleradapter;
-    String CategoryName,strtext;
+    String CategoryName, strtext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-         strtext = getArguments().getString("CategoryId");
-        CategoryName=getArguments().getString("CategoryName");
+        strtext = getArguments().getString("CategoryId");
+        CategoryName = getArguments().getString("CategoryName");
         getActivity().setTitle(CategoryName);
         View view = inflater.inflate(R.layout.fragment_product_seller_listing, container, false);
         sellerlist = view.findViewById(R.id.sellerlist);
@@ -68,6 +70,22 @@ public class ServiceSellerListing extends Fragment {
                                     int position, long id) {
                 Toast.makeText(getActivity(), "You Clicked at " + FirmName[+position], Toast.LENGTH_SHORT).show();
 
+                Bundle bundle = new Bundle();
+                bundle.putString("SellerUserId", SellerUserId[position]);
+                bundle.putString("FirmName", FirmName[position]);
+                bundle.putString("MobileNumber", MobileNumber[position]);
+                bundle.putString("Address1", Address1[position]);
+                bundle.putString("PinCode", PinCode[position]);
+                bundle.putString("Image1", Image1[position]);
+                bundle.putString("CategoryName", CategoryName);
+
+                fragment = new BookAppointmentFragment();
+                fragment.setArguments(bundle);
+                FragmentTransaction tx = getActivity().getSupportFragmentManager().beginTransaction();
+                tx.replace(R.id.flContent, fragment, FirmName[position]);
+                tx.commit();
+                tx.addToBackStack(null);
+
             }
         });
 
@@ -84,7 +102,7 @@ public class ServiceSellerListing extends Fragment {
 
 
     public void getStore(String id) {
-        JsonArrayRequest req = new JsonArrayRequest(UrlConstant.GET_STORE_byID+id,
+        JsonArrayRequest req = new JsonArrayRequest(UrlConstant.GET_STORE_byID + id,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -113,10 +131,10 @@ public class ServiceSellerListing extends Fragment {
                                 PinCode[i] = person.getString("PinCode");
                                 Image1[i] = person.getString("Image1");
 
-                                seller_data.add(new ServiceSeller(SellerUserId[i],Industry[i],CategoryOfBusiness[i],FirmName[i],
-                                        MobileNumber[i],Address1[i],PinCode[i],Image1[i]));
+                                seller_data.add(new ServiceSeller(SellerUserId[i], Industry[i], CategoryOfBusiness[i], FirmName[i],
+                                        MobileNumber[i], Address1[i], PinCode[i], Image1[i]));
                             }
-                            selleradapter=new ServiceSellerAdapter(getActivity(),R.layout.service_seller_layout_listing_adapter,seller_data);
+                            selleradapter = new ServiceSellerAdapter(getActivity(), R.layout.service_seller_layout_listing_adapter, seller_data);
                             sellerlist.setAdapter(selleradapter);
                             selleradapter.notifyDataSetChanged();
 

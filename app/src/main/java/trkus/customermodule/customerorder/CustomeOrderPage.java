@@ -29,17 +29,17 @@ import util.AppController;
 import util.UrlConstant;
 import util.UserSessionManager;
 
-public class CustomeOrderPage extends Fragment{
+public class CustomeOrderPage extends Fragment {
 
 
     Fragment fragment = null;
-    String[] SellerUserId,OrderId,Itemn,OrderDate,FirmName,FirmImage,OrderImage1;
+    String[] SellerUserId, OrderId, Itemn, OrderDate, FirmName, FirmImage, OrderImage1;
     ProgressDialog pDialog;
     String Tag = "Dashboard";
     ListView sellerlist;
     ArrayList<OrderData> seller_data = null;
     CustomerOrderAdapter selleradapter;
-    String CategoryName,strtext;
+    String CategoryName, strtext;
     UserSessionManager session;
 
     @Override
@@ -49,7 +49,7 @@ public class CustomeOrderPage extends Fragment{
         View view = inflater.inflate(R.layout.fragment_product_seller_listing, container, false);
         sellerlist = view.findViewById(R.id.sellerlist);
         seller_data = new ArrayList<OrderData>();
-        session=new UserSessionManager(getActivity());
+        session = new UserSessionManager(getActivity());
 
         pDialog = new ProgressDialog(getActivity());
         pDialog.setMessage("Loading...");
@@ -79,8 +79,9 @@ public class CustomeOrderPage extends Fragment{
         return view;
 
     }
+
     public void getOrder(String id) {
-        JsonArrayRequest req = new JsonArrayRequest(UrlConstant.GET_Customer_Order_Url+id,
+        JsonArrayRequest req = new JsonArrayRequest(UrlConstant.GET_Customer_Order_Url + id,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -109,10 +110,10 @@ public class CustomeOrderPage extends Fragment{
                                 FirmImage[i] = person.getString("FirmImage");
                                 OrderImage1[i] = person.getString("OrderImage1");
 
-                                seller_data.add(new OrderData(SellerUserId[i],OrderId[i],Itemn[i],
-                                        OrderDate[i],FirmName[i],FirmImage[i],OrderImage1[i]));
+                                seller_data.add(new OrderData(SellerUserId[i], OrderId[i], Itemn[i],
+                                        OrderDate[i], FirmName[i], FirmImage[i], OrderImage1[i]));
                             }
-                            selleradapter=new CustomerOrderAdapter(getActivity(), R.layout.customer_order_adapter,seller_data);
+                            selleradapter = new CustomerOrderAdapter(getActivity(), R.layout.customer_order_adapter, seller_data);
                             sellerlist.setAdapter(selleradapter);
                             selleradapter.notifyDataSetChanged();
 

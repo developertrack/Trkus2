@@ -15,6 +15,8 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 
+import trkus.sellermodule.sellerfavouritecontacts.SellerFavouiteContacts;
+import trkus.sellermodule.sellerordermodule.SellerOrderListing;
 import trkus.services.com.trkus.R;
 import util.UserSessionManager;
 
@@ -25,12 +27,13 @@ public class SellerDashboard extends AppCompatActivity implements NavigationView
     private static int NUM_PAGES = 0;
     UserSessionManager session;
     Fragment fragment = null;
+    FragmentManager fragmentManager;
     private ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
-    FragmentManager fragmentManager ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.setTitle("Dashboard");
         setContentView(R.layout.activity_seller_dashboard);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -46,7 +49,9 @@ public class SellerDashboard extends AppCompatActivity implements NavigationView
         navigationView.setNavigationItemSelectedListener(SellerDashboard.this);
 
         session = new UserSessionManager(SellerDashboard.this);
-        fragmentManager =getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
+
+
 //        fragment = new HomePage();
 //        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
 //        tx.replace(R.id.flContent, fragment, "home");
@@ -63,16 +68,36 @@ public class SellerDashboard extends AppCompatActivity implements NavigationView
             FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
             tx.replace(R.id.flContent, fragment, "home");
             tx.commit();
-            getSupportActionBar().setTitle("Home fragment ");
+            tx.addToBackStack(null);
 //
         } else if (id == R.id.nav_orderhistory) {
+            Fragment fragment = new SellerOrderListing();
+            FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+            tx.replace(R.id.flContent, fragment, "SellerOrderListing");
+            tx.commit();
+            tx.addToBackStack(null);
 
+        } else if (id == R.id.nav_favourite) {
+            fragment = new SellerFavouiteContacts();
+            FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+            tx.replace(R.id.flContent, fragment, "favourite Contacts");
+            tx.commit();
+            tx.addToBackStack(null);
         }
 
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        clearBackStack();
         return true;
+    }
+
+    private void clearBackStack() {
+        FragmentManager manager = getSupportFragmentManager();
+        if (manager.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
+            manager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
     }
 
 

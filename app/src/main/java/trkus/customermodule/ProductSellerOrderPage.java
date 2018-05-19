@@ -61,29 +61,47 @@ public class ProductSellerOrderPage extends Fragment {
     ProgressDialog pDialog;
     JSONObject data_jobject;
     String Tag = "Dashboard";
-    String SellerUserId,Industry,FirmName,MobileNumber,Address1,PinCode,Image1,CategoryName;
-    TextView seller_name_title,seller_address,seller_contact,upload_list;
+    String SellerUserId, Industry, FirmName, MobileNumber, Address1, PinCode, Image1, CategoryName;
+    TextView seller_name_title, seller_address, seller_contact, upload_list;
     NetworkImageView image;
-    Button addtofavourite,next;
+    Button addtofavourite, next;
     EditText et_itemlist;
-    String imgFile="";
-    private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
-    private String userChoosenTask;
+    String imgFile = "";
     String str_itemlist;
     UserSessionManager session;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
     ScrollView scrollView;
-    int order_status=0;
+    int order_status = 0;
+    private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
+    private String userChoosenTask;
+
+    public static String getPath(Context context, Uri uri) {
+        String result = null;
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                int column_index = cursor.getColumnIndexOrThrow(proj[0]);
+                result = cursor.getString(column_index);
+            }
+            cursor.close();
+        }
+        if (result == null) {
+            result = "Not found";
+        }
+        return result;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         SellerUserId = getArguments().getString("SellerUserId");
-        CategoryName=getArguments().getString("CategoryName");
+        CategoryName = getArguments().getString("CategoryName");
         FirmName = getArguments().getString("FirmName");
-        MobileNumber=getArguments().getString("MobileNumber");
+        MobileNumber = getArguments().getString("MobileNumber");
         Address1 = getArguments().getString("Address1");
-        PinCode=getArguments().getString("PinCode");
-        Image1=getArguments().getString("Image1");
+        PinCode = getArguments().getString("PinCode");
+        Image1 = getArguments().getString("Image1");
 
         getActivity().setTitle(CategoryName);
         View view = inflater.inflate(R.layout.product_seller_detail, container, false);
@@ -91,7 +109,7 @@ public class ProductSellerOrderPage extends Fragment {
         seller_name_title = view.findViewById(R.id.seller_name_title);
         seller_name_title.setText(FirmName);
         seller_address = view.findViewById(R.id.seller_address);
-        seller_address.setText(Address1+ " "+ PinCode);
+        seller_address.setText(Address1 + " " + PinCode);
         seller_contact = view.findViewById(R.id.seller_contact);
         seller_contact.setText(MobileNumber);
         upload_list = view.findViewById(R.id.upload_list);
@@ -99,7 +117,7 @@ public class ProductSellerOrderPage extends Fragment {
         addtofavourite = view.findViewById(R.id.addtofavourite);
         et_itemlist = view.findViewById(R.id.et_itemlist);
         next = view.findViewById(R.id.next);
-        session=new UserSessionManager(getActivity());
+        session = new UserSessionManager(getActivity());
         scrollView = view.findViewById(R.id.scrollView);
         scrollView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -130,44 +148,43 @@ public class ProductSellerOrderPage extends Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                str_itemlist=et_itemlist.getText().toString();
-                if(str_itemlist.isEmpty() ){
-                    str_itemlist="NA";
-                    order_status=1;
+                str_itemlist = et_itemlist.getText().toString();
+                if (str_itemlist.isEmpty()) {
+                    str_itemlist = "NA";
+                    order_status = 1;
                 }
-                if(str_itemlist.isEmpty() ){
-                    str_itemlist="NA";
-                    order_status=order_status+1;
+                if (str_itemlist.isEmpty()) {
+                    str_itemlist = "NA";
+                    order_status = order_status + 1;
                 }
 
-                if(order_status==2){
-                    Toast.makeText(getActivity(),"Please write or upload product list",Toast.LENGTH_LONG).show();
-                }else{
-                    pDialog= new ProgressDialog(getActivity());
+                if (order_status == 2) {
+                    Toast.makeText(getActivity(), "Please write or upload product list", Toast.LENGTH_LONG).show();
+                } else {
+                    pDialog = new ProgressDialog(getActivity());
                     pDialog.setMessage("Loading...");
                     pDialog.show();
 
 
                     MultipartRequestParams params = new MultipartRequestParams();
-                    params.put("SellerUserId",SellerUserId);
-                    params.put("CustomerUserId",session.getKeyUserid());
-                    params.put("ItemName",str_itemlist);
-                    params.put("Image1",imgFile);
+                    params.put("SellerUserId", SellerUserId);
+                    params.put("CustomerUserId", session.getKeyUserid());
+                    params.put("ItemName", str_itemlist);
+                    params.put("Image1", imgFile);
 
                     AppController.getInstance().addToRequestQueue(new MultipartRequest(Request.Method.POST, params, UrlConstant.Post_Order_Url, new Response.Listener() {
                         @Override
                         public void onResponse(Object response) {
 
-                            Log.e("response",response.toString());
+                            Log.e("response", response.toString());
                             try {
                                 JSONObject mainObject = new JSONObject(response.toString());
-                                Toast.makeText(getActivity(),mainObject.getString("Message"),Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), mainObject.getString("Message"), Toast.LENGTH_LONG).show();
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 //                            {"CustomerUserId":45,"Message":"Order Sucessfully!","OrderId":"TRKUS180505115032389","Status":true}
-
 
 
                             pDialog.dismiss();
@@ -197,26 +214,25 @@ public class ProductSellerOrderPage extends Fragment {
 
     }
 
-
     private void selectImage() {
-        final CharSequence[] items = { "Take Photo", "Choose from Library",
-                "Cancel" };
+        final CharSequence[] items = {"Take Photo", "Choose from Library",
+                "Cancel"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Add Photo!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                boolean result= Utility.checkPermission(getActivity());
+                boolean result = Utility.checkPermission(getActivity());
 
                 if (items[item].equals("Take Photo")) {
-                    userChoosenTask ="Take Photo";
-                    if(result)
+                    userChoosenTask = "Take Photo";
+                    if (result)
                         cameraIntent();
 
                 } else if (items[item].equals("Choose from Library")) {
-                    userChoosenTask ="Choose from Library";
-                    if(result)
+                    userChoosenTask = "Choose from Library";
+                    if (result)
                         galleryIntent();
 
                 } else if (items[item].equals("Cancel")) {
@@ -227,16 +243,14 @@ public class ProductSellerOrderPage extends Fragment {
         builder.show();
     }
 
-    private void galleryIntent()
-    {
+    private void galleryIntent() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);//
-        startActivityForResult(Intent.createChooser(intent, "Select File"),SELECT_FILE);
+        startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
     }
 
-    private void cameraIntent()
-    {
+    private void cameraIntent() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, REQUEST_CAMERA);
     }
@@ -258,10 +272,10 @@ public class ProductSellerOrderPage extends Fragment {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
 
-        Uri tempUri = getImageUri(getActivity( ).getApplicationContext(), thumbnail);
+        Uri tempUri = getImageUri(getActivity().getApplicationContext(), thumbnail);
 
 //        Uri selectedImageUri = data.getData( );
-        imgFile = getPath( getActivity( ).getApplicationContext( ), tempUri );
+        imgFile = getPath(getActivity().getApplicationContext(), tempUri);
 
 
         File destination = new File(Environment.getExternalStorageDirectory(),
@@ -285,13 +299,12 @@ public class ProductSellerOrderPage extends Fragment {
     @SuppressWarnings("deprecation")
     private void onSelectFromGalleryResult(Intent data) {
 
-        Bitmap bm=null;
+        Bitmap bm = null;
         if (data != null) {
             try {
-                Uri selectedImageUri = data.getData( );
-                imgFile = getPath( getActivity( ).getApplicationContext( ), selectedImageUri );
+                Uri selectedImageUri = data.getData();
+                imgFile = getPath(getActivity().getApplicationContext(), selectedImageUri);
                 Log.d("Picture Path", imgFile);
-
 
 
                 bm = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData());
@@ -302,31 +315,13 @@ public class ProductSellerOrderPage extends Fragment {
 
         image.setImageBitmap(bm);
     }
+
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
-
-
-    public static String getPath(Context context, Uri uri ) {
-        String result = null;
-        String[] proj = { MediaStore.Images.Media.DATA };
-        Cursor cursor = context.getContentResolver( ).query( uri, proj, null, null, null );
-        if(cursor != null){
-            if ( cursor.moveToFirst( ) ) {
-                int column_index = cursor.getColumnIndexOrThrow( proj[0] );
-                result = cursor.getString( column_index );
-            }
-            cursor.close( );
-        }
-        if(result == null) {
-            result = "Not found";
-        }
-        return result;
-    }
-
 
     public void addSellerFavourite() {
 
@@ -335,7 +330,7 @@ public class ProductSellerOrderPage extends Fragment {
 
         data_jobject = new JSONObject();
         try {
-            data_jobject.put("SellerId",SellerUserId);
+            data_jobject.put("SellerId", SellerUserId);
             data_jobject.put("CustomerUserId", session.getKeyUserid());
 
         } catch (Exception e) {
@@ -343,7 +338,7 @@ public class ProductSellerOrderPage extends Fragment {
         }
 
 
-        Log.e("data_jobject",data_jobject.toString());
+        Log.e("data_jobject", data_jobject.toString());
 
         pDialog = new ProgressDialog(getActivity());
         pDialog.setMessage("Loading...");
@@ -354,7 +349,7 @@ public class ProductSellerOrderPage extends Fragment {
                 new Response.Listener<JSONObject>() {
 
                     @Override
-                    public void onResponse( final JSONObject response) {
+                    public void onResponse(final JSONObject response) {
                         Log.e(TAG, response.toString());
                         try {
                             String Status = response.getString("Status");

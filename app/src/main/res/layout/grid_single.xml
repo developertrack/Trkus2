@@ -2,17 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|center_vertical"
         android:orientation="vertical">
+
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/grid_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_margin="4dp"
-            />
+            android:layout_margin="4dp" />
+
         <TextView
             android:id="@+id/grid_text"
             android:layout_width="match_parent"

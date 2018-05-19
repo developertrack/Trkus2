@@ -34,18 +34,19 @@ public class ProductSellerListing extends Fragment {
 
 
     Fragment fragment = null;
-    String[] SellerUserId,Industry,CategoryOfBusiness,FirmName,MobileNumber,Address1,PinCode,Image1;
+    String[] SellerUserId, Industry, CategoryOfBusiness, FirmName, MobileNumber, Address1, PinCode, Image1;
     ProgressDialog pDialog;
     String Tag = "Dashboard";
     ListView sellerlist;
-    ArrayList<ProductSeller> seller_data =null;
+    ArrayList<ProductSeller> seller_data = null;
     ProductSellerAdapter selleradapter;
-    String CategoryName,strtext;
+    String CategoryName, strtext;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         strtext = getArguments().getString("CategoryId");
-        CategoryName=getArguments().getString("CategoryName");
+        CategoryName = getArguments().getString("CategoryName");
         getActivity().setTitle(CategoryName);
         View view = inflater.inflate(R.layout.fragment_product_seller_listing, container, false);
         sellerlist = view.findViewById(R.id.sellerlist);
@@ -77,7 +78,7 @@ public class ProductSellerListing extends Fragment {
                 bundle.putString("Address1", Address1[position]);
                 bundle.putString("PinCode", PinCode[position]);
                 bundle.putString("Image1", Image1[position]);
-                bundle.putString("CategoryName",CategoryName);
+                bundle.putString("CategoryName", CategoryName);
 
                 fragment = new ProductSellerOrderPage();
                 fragment.setArguments(bundle);
@@ -94,10 +95,8 @@ public class ProductSellerListing extends Fragment {
     }
 
 
-
-
     public void getStore(String id) {
-        JsonArrayRequest req = new JsonArrayRequest(UrlConstant.GET_STORE_byID+id,
+        JsonArrayRequest req = new JsonArrayRequest(UrlConstant.GET_STORE_byID + id,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -126,10 +125,10 @@ public class ProductSellerListing extends Fragment {
                                 PinCode[i] = person.getString("PinCode");
                                 Image1[i] = person.getString("Image1");
 
-                                seller_data.add(new ProductSeller(SellerUserId[i],Industry[i],CategoryOfBusiness[i],FirmName[i],
-                                        MobileNumber[i],Address1[i],PinCode[i],Image1[i]));
+                                seller_data.add(new ProductSeller(SellerUserId[i], Industry[i], CategoryOfBusiness[i], FirmName[i],
+                                        MobileNumber[i], Address1[i], PinCode[i], Image1[i]));
                             }
-                            selleradapter=new ProductSellerAdapter(getActivity(),R.layout.seller_layout_listing_adapter,seller_data);
+                            selleradapter = new ProductSellerAdapter(getActivity(), R.layout.seller_layout_listing_adapter, seller_data);
                             sellerlist.setAdapter(selleradapter);
                             selleradapter.notifyDataSetChanged();
 

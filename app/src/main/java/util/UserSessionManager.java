@@ -5,49 +5,41 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+
 import java.util.HashMap;
+
 import trkus.services.com.trkus.LoginActivity;
 
 public class UserSessionManager {
 
+    // Email address (make variable public to access from outside)
+    public static final String KEY_USER_TYPE = "usertype";
+    // Email address (make variable public to access from outside)
+    public static final String KEY_USERID = "userid";
+    // Email address (make variable public to access from outside)
+    public static final String KEY_NUMBER = "number";
+    // Sharedpref file name
+    private static final String PREFER_NAME = "Trkus";
+    // All Shared Preferences Keys
+    private static final String IS_USER_LOGIN = "IsUserLoggedIn";
     // Shared Preferences reference
     SharedPreferences pref;
-
     // Editor reference for Shared preferences
     SharedPreferences.Editor editor;
-
     // Context
     Context _context;
-
     // Shared pref mode
     int PRIVATE_MODE = 0;
 
-    // Sharedpref file name
-    private static final String PREFER_NAME = "Trkus";
-
-    // All Shared Preferences Keys
-    private static final String IS_USER_LOGIN = "IsUserLoggedIn";
-
-
-    // Email address (make variable public to access from outside)
-    public static final String KEY_USER_TYPE = "usertype";
-
-
-    // Email address (make variable public to access from outside)
-    public static final String KEY_USERID = "userid";
-
-    // Email address (make variable public to access from outside)
-    public static final String KEY_NUMBER = "number";
-
     // Constructor
-    public UserSessionManager(Context context){
+    public UserSessionManager(Context context) {
         this._context = context;
         pref = _context.getSharedPreferences(PREFER_NAME, PRIVATE_MODE);
         editor = pref.edit();
     }
 
     //Create login session
-    public void createUserLoginSession(String usertype, String userid, String number){
+    public void createUserLoginSession(String usertype, String userid, String number) {
         // Storing login value as TRUE
         editor.putBoolean(IS_USER_LOGIN, true);
 
@@ -65,9 +57,9 @@ public class UserSessionManager {
         editor.commit();
     }
 
-    public boolean checkLogin(){
+    public boolean checkLogin() {
         // Check login status
-        if(!this.isUserLoggedIn()){
+        if (!this.isUserLoggedIn()) {
 
             // user is not logged in redirect him to Login Activity
             Intent i = new Intent(_context, LoginActivity.class);
@@ -87,11 +79,10 @@ public class UserSessionManager {
     }
 
 
-
     /**
      * Get stored session data
-     * */
-    public HashMap<String, String> getUserDetails(){
+     */
+    public HashMap<String, String> getUserDetails() {
 
         //Use hashmap to store user credentials
         HashMap<String, String> user = new HashMap<String, String>();
@@ -112,38 +103,38 @@ public class UserSessionManager {
 
     /**
      * Clear session details
-     * */
+     */
 
-    public String getKeyUserid(){
+    public String getKeyUserid() {
 
         HashMap<String, String> user = getUserDetails();
 
-        String userid=user.get(KEY_USERID);
+        String userid = user.get(KEY_USERID);
 
         return userid;
     }
 
-    public String getKeyUserType(){
+    public String getKeyUserType() {
 
         HashMap<String, String> user = getUserDetails();
 
-        String emailid=user.get(KEY_USER_TYPE);
+        String emailid = user.get(KEY_USER_TYPE);
 
         return emailid;
     }
 
 
-    public String getKeyNumber(){
+    public String getKeyNumber() {
 
         HashMap<String, String> user = getUserDetails();
 
-        String number=user.get(KEY_NUMBER);
+        String number = user.get(KEY_NUMBER);
 
         return number;
     }
 
 
-    public void logoutUser(){
+    public void logoutUser() {
 
         // Clearing all user data from Shared Preferences
         editor.clear();
@@ -161,12 +152,12 @@ public class UserSessionManager {
         // Staring Login Activity
         _context.startActivity(i);
 
-        ((Activity)_context).finish();
+        ((Activity) _context).finish();
     }
 
 
     // Check for login
-    public boolean isUserLoggedIn(){
+    public boolean isUserLoggedIn() {
         return pref.getBoolean(IS_USER_LOGIN, false);
     }
 }

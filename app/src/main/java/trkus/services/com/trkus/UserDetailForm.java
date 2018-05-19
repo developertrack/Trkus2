@@ -44,9 +44,9 @@ import util.UrlConstant;
 
 public class UserDetailForm extends AppCompatActivity {
 
+    public final static int TAG_PERMISSION_CODE = 1;
     EditText name, email, address;
     LocationManager locationManager;
-    public final static int TAG_PERMISSION_CODE = 1;
     double latitude, longitude;
     LinearLayout detect;
     String TAG = "UserDetailForm_TAG";
@@ -55,7 +55,7 @@ public class UserDetailForm extends AppCompatActivity {
     JSONObject data_jobject;
     Intent intent;
     Location location = null;
-    String UserTypeId,MobileNumber;
+    String UserTypeId, MobileNumber;
     Button next;
 
     @Override
@@ -70,8 +70,8 @@ public class UserDetailForm extends AppCompatActivity {
         next = findViewById(R.id.next);
 
         intent = getIntent();
-        UserTypeId=intent.getStringExtra("UserTypeId");
-        MobileNumber=intent.getStringExtra("MobileNumber");
+        UserTypeId = intent.getStringExtra("UserTypeId");
+        MobileNumber = intent.getStringExtra("MobileNumber");
 
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
@@ -112,7 +112,7 @@ public class UserDetailForm extends AppCompatActivity {
                 String Text = "location: " +
                         "Latitude = " + location.getLatitude() +
                         "Longitude = " + location.getLongitude();
-                getCompleteAddressString(location.getLatitude(),location.getLongitude());
+                getCompleteAddressString(location.getLatitude(), location.getLongitude());
             }
         });
 
@@ -120,51 +120,22 @@ public class UserDetailForm extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(name.getText().toString().length()>0 && isValidEmaillId(email.getText().toString()) &&email.getText().toString().length()>0 && address.getText().toString().length()>0){
+                if (name.getText().toString().length() > 0 && isValidEmaillId(email.getText().toString()) && email.getText().toString().length() > 0 && address.getText().toString().length() > 0) {
                     RegisterUser();
-                }else if(name.getText().toString().length()==0){
-                    Toast.makeText(UserDetailForm.this,"Please enter name",Toast.LENGTH_LONG).show();
-                }else if(email.getText().toString().length()==0){
-                    Toast.makeText(UserDetailForm.this,"Please enter valid email",Toast.LENGTH_LONG).show();
-                }else if(isValidEmaillId(email.getText().toString())){
-                    Toast.makeText(UserDetailForm.this,"Please enter email",Toast.LENGTH_LONG).show();
-                }else if(address.getText().toString().length()==0){
-                    Toast.makeText(UserDetailForm.this,"Please enter Address",Toast.LENGTH_LONG).show();
+                } else if (name.getText().toString().length() == 0) {
+                    Toast.makeText(UserDetailForm.this, "Please enter name", Toast.LENGTH_LONG).show();
+                } else if (email.getText().toString().length() == 0) {
+                    Toast.makeText(UserDetailForm.this, "Please enter valid email", Toast.LENGTH_LONG).show();
+                } else if (isValidEmaillId(email.getText().toString())) {
+                    Toast.makeText(UserDetailForm.this, "Please enter email", Toast.LENGTH_LONG).show();
+                } else if (address.getText().toString().length() == 0) {
+                    Toast.makeText(UserDetailForm.this, "Please enter Address", Toast.LENGTH_LONG).show();
                 }
-
-
 
 
             }
         });
     }
-
-    public class MyLocationListener implements LocationListener{
-        @Override
-
-        public void onLocationChanged(Location loc){
-
-            location = loc;
-
-
-
-        }
-        public void onProviderDisabled(String provider){
-
-            //nothin
-        }
-
-
-        public void onProviderEnabled(String provider){
-
-            //nothin
-        }
-
-        public void onStatusChanged(String provider, int status, Bundle extras){
-            //nothin
-        }
-    }/* End of Class MyLocationListener */
-
 
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
         String strAdd = "";
@@ -192,7 +163,7 @@ public class UserDetailForm extends AppCompatActivity {
         return strAdd;
     }
 
-    private boolean isValidEmaillId(String email){
+    private boolean isValidEmaillId(String email) {
 
         return Pattern.compile("^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]{1}|[\\w-]{2,}))@"
                 + "((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
@@ -201,7 +172,8 @@ public class UserDetailForm extends AppCompatActivity {
                 + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
                 + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$").matcher(email).matches();
     }
-    public void RegisterUser(){
+
+    public void RegisterUser() {
 
         String tag_json_obj = "json_obj_req";
 
@@ -221,7 +193,7 @@ public class UserDetailForm extends AppCompatActivity {
         } catch (Exception e) {
 
         }
-        Log.e("Verify OTP",data_jobject.toString());
+        Log.e("Verify OTP", data_jobject.toString());
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
                 UrlConstant.AddUserInformation_URL, data_jobject,
@@ -230,10 +202,10 @@ public class UserDetailForm extends AppCompatActivity {
                     @Override
                     public void onResponse(final JSONObject response) {
                         Log.e(TAG, response.toString());
-                        try{
-                            String Status=response.getString("Status");
+                        try {
+                            String Status = response.getString("Status");
 
-                            if(Status.equals("false")){
+                            if (Status.equals("false")) {
 
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -250,13 +222,13 @@ public class UserDetailForm extends AppCompatActivity {
                                     }
                                 });
 
-                            }else{
-                                Intent verification=new Intent(UserDetailForm.this,Dashboard.class);
+                            } else {
+                                Intent verification = new Intent(UserDetailForm.this, LoginActivity.class);
                                 verification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(verification);
                             }
 
-                        }catch (Exception e){
+                        } catch (Exception e) {
 
                         }
 
@@ -294,4 +266,30 @@ public class UserDetailForm extends AppCompatActivity {
 
 
     }
+
+    public class MyLocationListener implements LocationListener {
+        @Override
+
+        public void onLocationChanged(Location loc) {
+
+            location = loc;
+
+
+        }
+
+        public void onProviderDisabled(String provider) {
+
+            //nothin
+        }
+
+
+        public void onProviderEnabled(String provider) {
+
+            //nothin
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            //nothin
+        }
+    }/* End of Class MyLocationListener */
 }

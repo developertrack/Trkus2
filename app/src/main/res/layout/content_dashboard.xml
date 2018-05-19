@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
@@ -16,20 +15,19 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="150dp"
-            android:orientation="vertical"
-            android:background="@drawable/banner">
+            android:background="@drawable/banner"
+            android:orientation="vertical">
 
         </LinearLayout>
 
         <GridView
-            android:numColumns="auto_fit"
-            android:gravity="center"
-            android:columnWidth="100dp"
-            android:stretchMode="columnWidth"
+            android:id="@+id/grid"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:id="@+id/grid"
-            />
+            android:columnWidth="100dp"
+            android:gravity="center"
+            android:numColumns="auto_fit"
+            android:stretchMode="columnWidth" />
     </LinearLayout>
 
 </LinearLayout>

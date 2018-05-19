@@ -38,19 +38,20 @@ import util.UrlConstant;
 @SuppressLint("ValidFragment")
 public class HomePage extends Fragment {
 
-    LinearLayout usefull_link,news;
+    LinearLayout usefull_link, news;
     Fragment fragment = null;
     GridView grid;
-    String[] CategoryId,CategoryName,CategoryImage,CategoryType;
+    String[] CategoryId, CategoryName, CategoryImage, CategoryType;
     ProgressDialog pDialog;
-    String Tag="Dashboard";
+    String Tag = "Dashboard";
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getActivity().setTitle("Trkus");
         View view = inflater.inflate(R.layout.layout_home, container, false);
-        grid=(GridView)view.findViewById(R.id.grid);
+        grid = view.findViewById(R.id.grid);
         getCategory();
-        pDialog= new ProgressDialog(getActivity());
+        pDialog = new ProgressDialog(getActivity());
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -69,12 +70,12 @@ public class HomePage extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Toast.makeText(getActivity(), "You Clicked at " +CategoryName[+ position], Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "You Clicked at " + CategoryName[+position], Toast.LENGTH_SHORT).show();
                 Bundle bundle = new Bundle();
                 bundle.putString("CategoryId", CategoryId[position]);
                 bundle.putString("CategoryName", CategoryName[position]);
 
-                if(CategoryType[position].equals("1")) {
+                if (CategoryType[position].equals("1")) {
 
                     fragment = new ProductSellerListing();
                     fragment.setArguments(bundle);
@@ -83,7 +84,7 @@ public class HomePage extends Fragment {
                     tx.commit();
                     tx.addToBackStack(null);
                 }
-                if(CategoryType[position].equals("2")) {
+                if (CategoryType[position].equals("2")) {
 
                     fragment = new ServiceSellerListing();
                     fragment.setArguments(bundle);
@@ -107,17 +108,17 @@ public class HomePage extends Fragment {
     }
 
 
-    public void getCategory(){
+    public void getCategory() {
         JsonArrayRequest req = new JsonArrayRequest(UrlConstant.GETBusiness_Category_URL,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d(Tag, response.toString());
 //                        CategoryId,CategoryName,CategoryImage,CategoryType
-                        CategoryId=new String[response.length()];
-                        CategoryName=new String[response.length()];
-                        CategoryImage=new String[response.length()];
-                        CategoryType=new String[response.length()];
+                        CategoryId = new String[response.length()];
+                        CategoryName = new String[response.length()];
+                        CategoryImage = new String[response.length()];
+                        CategoryType = new String[response.length()];
 
                         try {
 

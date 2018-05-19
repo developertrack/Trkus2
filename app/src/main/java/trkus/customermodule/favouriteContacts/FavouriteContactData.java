@@ -2,15 +2,26 @@ package trkus.customermodule.favouriteContacts;
 
 public class FavouriteContactData {
 
-    String Name, Address, FirmName, MobileNumber;
+    String Name, Address, FirmName, MobileNumber, Id;
 
-    public FavouriteContactData(String s, String address, String s1, String s2) {
+
+    public FavouriteContactData(String s, String address, String s1, String s2, String id) {
 
         this.Name = s;
         this.Address = address;
         this.FirmName = s1;
         this.MobileNumber = s2;
+        this.Id = id;
 
+
+    }
+
+    public String getId() {
+        return Id;
+    }
+
+    public void setId(String id) {
+        Id = id;
     }
 
     public String getName() {
