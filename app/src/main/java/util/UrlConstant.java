@@ -5,7 +5,7 @@ package util;
  */
 
 public class UrlConstant {
-
+//    http://webservicestrkus.tarule.com/
     public static String base_url = "http://webservicestrkus.tarule.com/";
     public static String LOGIN_URL = base_url + "api/Account/UserRegistration";
     public static String RESEND_OTP = base_url + "api/Account/ResendOTPRegistration";
@@ -36,4 +36,10 @@ public class UrlConstant {
     public static String GET_Seller_RemoveFavouriteContact_Url = base_url + "api/Seller/RemoveFavoriteContact?Id=";
     public static String GET_Customer_RemoveFavouriteContact_Url = base_url + "api/Order/RemoveFavoriteContact?Id=";
     public static String POST_Reorder_Item = base_url + "api/Order/ReOrderDailyNeedsItem";
+    public static String POST_Seller_Schedule = base_url + "api/Seller/CreateShedule";
+    public static String GET_Seller_Profile_Update = base_url + "api/Account/GetProfileDetails?UserId=";
+    public static String GET_Custor_Order_Detail = base_url + "api/Order/GetOrderDetails?CustomerUserId=";
+    public static String GET_Seller_Availability=base_url+"api/Seller/GetShedule?SellerId=";
+    public static String POST_Seller_Appointment=base_url+"api/Order/AddAppointment";
+    public static String GET_Customer_Appointment=base_url+"api/Order/GetAppointmentHistory?CustomerId=";
 }

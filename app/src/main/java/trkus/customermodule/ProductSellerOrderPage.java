@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -44,6 +45,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import trkus.customermodule.customerorder.CustomeOrderPage;
 import trkus.services.com.trkus.R;
 import util.AppController;
 import util.MultipartRequest;
@@ -128,7 +130,11 @@ public class ProductSellerOrderPage extends Fragment {
             }
         });
 
-        image.setImageUrl(Image1, imageLoader);
+        String temp =Image1;
+
+        temp = temp.replaceAll(" ", "%20");
+
+        image.setImageUrl(temp, imageLoader);
 
         upload_list.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,8 +184,54 @@ public class ProductSellerOrderPage extends Fragment {
 
                             Log.e("response", response.toString());
                             try {
-                                JSONObject mainObject = new JSONObject(response.toString());
-                                Toast.makeText(getActivity(), mainObject.getString("Message"), Toast.LENGTH_LONG).show();
+                                final JSONObject mainObject = new JSONObject(response.toString());
+//                                Toast.makeText(getActivity(), mainObject.getString("Message"), Toast.LENGTH_LONG).show();
+
+                                String Status = mainObject.getString("Status");
+
+                                if (Status.equals("false")) {
+
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                                            try {
+                                                dlgAlert.setMessage(mainObject.getString("Message"));
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                            dlgAlert.setPositiveButton("OK", null);
+                                            dlgAlert.setCancelable(true);
+                                            dlgAlert.create().show();
+                                        }
+                                    });
+
+                                } else {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                                            try {
+                                                dlgAlert.setMessage(mainObject.getString("Message")+"\n"+"Your Orderid:- "+mainObject.getString("OrderId"));
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                            dlgAlert.setPositiveButton("OK",  new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    fragment = new CustomeOrderPage();
+                                                    FragmentTransaction tx = getActivity().getSupportFragmentManager().beginTransaction();
+                                                    tx.replace(R.id.flContent, fragment, "CustomerOrderPage");
+                                                    tx.commit();
+                                                    tx.addToBackStack(null);
+                                                }
+                                            });
+                                            dlgAlert.setCancelable(true);
+                                            dlgAlert.create().show();
+
+                                        }
+                                    });
+
+                                }
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -313,7 +365,7 @@ public class ProductSellerOrderPage extends Fragment {
             }
         }
 
-        image.setImageBitmap(bm);
+//        image.setImageBitmap(bm);
     }
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {

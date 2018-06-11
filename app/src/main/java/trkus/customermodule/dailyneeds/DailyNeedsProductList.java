@@ -120,10 +120,12 @@ public class DailyNeedsProductList extends Fragment {
                                 OrderImage1[i] = person.getString("OrderImage1");
 
                             }
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                                    android.R.layout.simple_list_item_1, android.R.id.text1,
-                                    Title);
-                            sellerlist.setAdapter(adapter);
+                            if (getActivity()!=null) {
+                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                                        android.R.layout.simple_list_item_1, android.R.id.text1,
+                                        Title);
+                                sellerlist.setAdapter(adapter);
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();

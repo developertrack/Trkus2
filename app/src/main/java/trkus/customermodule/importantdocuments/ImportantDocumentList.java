@@ -122,10 +122,12 @@ public class ImportantDocumentList extends Fragment {
                                 Remarks[i] = person.getString("Remarks");
 
                             }
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                                    android.R.layout.simple_list_item_1, android.R.id.text1,
-                                    Subject);
-                            sellerlist.setAdapter(adapter);
+                            if (getActivity()!=null) {
+                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                                        android.R.layout.simple_list_item_1, android.R.id.text1,
+                                        Subject);
+                                sellerlist.setAdapter(adapter);
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();

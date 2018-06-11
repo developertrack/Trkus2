@@ -25,7 +25,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     String senderNum = phoneNumber;
                     String message = currentMessage.getDisplayMessageBody();
                     try {
-                        if (senderNum.equals("HP-DEMOOS")) {
+                        if (senderNum.equals("HP-TRKUSS")) {
                             Intent smsIntent = new Intent("otp");
                             smsIntent.putExtra("message", message.substring(message.length() - 6));
                             LocalBroadcastManager.getInstance(context).sendBroadcast(smsIntent);

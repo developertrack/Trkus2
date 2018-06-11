@@ -1,4 +1,4 @@
-package trkus.customermodule;
+package trkus.sellermodule.sellerordermodule;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -19,7 +19,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.NetworkImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,16 +29,18 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import trkus.sellermodule.ProfileEdit;
 import trkus.services.com.trkus.R;
 import util.AppController;
 import util.UrlConstant;
 import util.UserSessionManager;
 
-public class CustomerProfileDetail extends Fragment {
+public class SellerDetail extends Fragment {
 
     UserSessionManager session;
-    TextView name, gender, dob, aadhar, bloodgroup, maritalstatus, occupation, mobile, address,
-            city, state, country, pincode, landline, ename, emobile, eraltionship;
+    TextView name, gender, firmname,categoryofbusiness, bloodgroup,mobile,email, address,
+           landline,  emobile;
+    NetworkImageView Image1,Image2,Image3;
     ScrollView scrollprofile;
     String tag_json_obj = "json_obj_req";
     ProgressDialog pDialog;
@@ -47,31 +51,27 @@ public class CustomerProfileDetail extends Fragment {
     Button btn_save;
     Fragment fragment = null;
 
+    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getActivity().setTitle("My Profile");
-        View view = inflater.inflate(R.layout.customer_profile_detail, container, false);
+         View view = inflater.inflate(R.layout.seller_profile_detail, container, false);
 
         btn_save = view.findViewById(R.id.btn_save);
         name = view.findViewById(R.id.name);
         gender = view.findViewById(R.id.gender);
-        dob = view.findViewById(R.id.dob);
-        aadhar = view.findViewById(R.id.aadhar);
+        firmname = view.findViewById(R.id.firmname);
+        categoryofbusiness = view.findViewById(R.id.categoryofbusiness);
         bloodgroup = view.findViewById(R.id.bloodgroup);
-        maritalstatus = view.findViewById(R.id.maritalstatus);
-        occupation = view.findViewById(R.id.occupation);
+        email = view.findViewById(R.id.email);
         mobile = view.findViewById(R.id.mobile);
         address = view.findViewById(R.id.address);
-        city = view.findViewById(R.id.city);
-        state = view.findViewById(R.id.state);
-        country = view.findViewById(R.id.country);
-        pincode = view.findViewById(R.id.pincode);
         landline = view.findViewById(R.id.landline);
-        ename = view.findViewById(R.id.ename);
         emobile = view.findViewById(R.id.emobile);
-        eraltionship = view.findViewById(R.id.eraltionship);
         scrollprofile = view.findViewById(R.id.scrollprofile);
-
+        Image1= view.findViewById(R.id.image1);
+        Image2= view.findViewById(R.id.image2);
+        Image3= view.findViewById(R.id.image3);
         session = new UserSessionManager(getActivity());
 
         scrollprofile = view.findViewById(R.id.scrollprofile);
@@ -88,9 +88,9 @@ public class CustomerProfileDetail extends Fragment {
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragment = new CustomerProfileEdit();
+                fragment = new ProfileEdit();
                 FragmentTransaction tx = getActivity().getSupportFragmentManager().beginTransaction();
-                tx.replace(R.id.flContent, fragment, "CustomerOrderPage");
+                tx.replace(R.id.flContent, fragment, "ProfileEdit");
                 tx.commit();
                 tx.addToBackStack(null);
             }
@@ -109,7 +109,7 @@ public class CustomerProfileDetail extends Fragment {
         pDialog.show();
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                UrlConstant.GET_Customer_Profile_Update + id, new Response.Listener<JSONObject>() {
+                UrlConstant.GET_Seller_Profile_Update + id, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -134,39 +134,40 @@ public class CustomerProfileDetail extends Fragment {
                                 dlgAlert.create().show();
                             }
                         });
-                        pDialog.dismiss();
+
 
                     } else {
-                        if(response.getString("AdharNumber").equals("null")){
 
+                        if(response.getString("FirmName").equals("null")){
+                            fragment = new ProfileEdit();
+                            FragmentTransaction tx = getActivity().getSupportFragmentManager().beginTransaction();
+                            tx.replace(R.id.flContent, fragment, "ProfileEdit");
+                            tx.commit();
+                            tx.addToBackStack(null);
                         }else {
 
                             name.setText(response.getString("Name"));
-                            gender.setText(response.getString("Gender"));
-                            dob.setText(response.getString("DOB"));
-                            aadhar.setText(response.getString("AdharNumber"));
+                            gender.setText(response.getString("Gender")+",");
                             bloodgroup.setText(response.getString("Bloodgroup"));
-                            maritalstatus.setText(response.getString("MaritalStatus"));
-                            occupation.setText(response.getString("Occuption"));
+                            firmname.setText(response.getString("FirmName"));
                             mobile.setText(response.getString("MobileNumber"));
+                            categoryofbusiness.setText(response.getString("CategoryOfBusiness"));
                             address.setText(response.getString("Address1"));
-                            pincode.setText(response.getString("PinCode"));
-                            landline.setText(response.getString("LandLineNumber"));
-                            city.setText(response.getString("CityName"));
-                            state.setText(response.getString("StateName"));
-                            country.setText(response.getString("Country"));
-                            ename.setText(response.getString("EmergencyName"));
+                            email.setText(response.getString("EmailId"));
+//                            landline.setText(response.getString("LandLineNumber"));
                             emobile.setText(response.getString("EmergencyMobileNumber"));
-                            eraltionship.setText(response.getString("EmergencyRelationShip"));
+
+                            Image1.setImageUrl(response.getString("Image1"), imageLoader);
+                            Image2.setImageUrl(response.getString("Image2"), imageLoader);
+                            Image3.setImageUrl(response.getString("Image3"), imageLoader);
                         }
 
                     }
-                    pDialog.dismiss();
 
                 } catch (Exception e) {
 
                 }
-
+                pDialog.dismiss();
                 pDialog.hide();
             }
         }, new Response.ErrorListener() {

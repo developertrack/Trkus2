@@ -20,7 +20,7 @@ public class WebpageLoad extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-
+        getActivity().setTitle("Trkus");
         View view = inflater.inflate(R.layout.webview, container, false);
         String strtext = getArguments().getString("nav_aboutus");
         mWebView = view.findViewById(R.id.webview);

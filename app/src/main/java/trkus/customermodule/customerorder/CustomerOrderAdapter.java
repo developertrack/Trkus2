@@ -2,7 +2,10 @@ package trkus.customermodule.customerorder;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +48,7 @@ public class CustomerOrderAdapter extends ArrayAdapter<OrderData> {
     UserSessionManager session;
     JSONObject data_jobject;
     String Tag = "Dashboard";
+    Fragment fragment = null;
 
     public CustomerOrderAdapter(FragmentActivity activity, int resource, ArrayList<OrderData> data) {
         super(activity, resource, data);
@@ -94,6 +98,7 @@ public class CustomerOrderAdapter extends ArrayAdapter<OrderData> {
                     .findViewById(R.id.orderid);
 
             holder.orderdetail.setTag(position);
+            holder.reorder.setTag(position);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -104,17 +109,33 @@ public class CustomerOrderAdapter extends ArrayAdapter<OrderData> {
         holder.firmname.setText(getdata.getFirmName());
         holder.orderid.setText(getdata.getOrderId());
         holder.order_date.setText(getdata.getOrderDate());
-        holder.seller_icon.setImageUrl(getdata.getFirmImage(), imageLoader);
+        String temp =getdata.getFirmImage();
+
+        temp = temp.replaceAll(" ", "%20");
+        holder.seller_icon.setImageUrl(temp, imageLoader);
+
+        holder.orderdetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String tag_json_obj = "json_obj_req";
+                getdata = dataget.get(position);
+                Bundle bundle = new Bundle();
+                bundle.putString("OrderId", getdata.getOrderId());
+                fragment = new CustomerOrderDetails();
+                fragment.setArguments(bundle);
+                FragmentTransaction tx = ((FragmentActivity)context).getSupportFragmentManager().beginTransaction();
+                tx.replace(R.id.flContent, fragment,  getdata.getOrderId());
+                tx.commit();
+                tx.addToBackStack(null);
+            }
+        });
 
         holder.reorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                pDialog.setMessage("Loading...");
-                pDialog.show();
-
                 String tag_json_obj = "json_obj_req";
-
+                getdata = dataget.get(position);
                 data_jobject = new JSONObject();
                 try {
                     data_jobject.put("OrderId", getdata.getOrderId());
@@ -144,9 +165,10 @@ public class CustomerOrderAdapter extends ArrayAdapter<OrderData> {
                                     if (Status.equals("false")) {
 
                                         Toast.makeText(context, response.getString("Message"), Toast.LENGTH_LONG).show();
-
+                                        pDialog.hide();
                                     } else {
                                         Toast.makeText(context, response.getString("Message"), Toast.LENGTH_LONG).show();
+                                        pDialog.hide();
                                     }
 
                                 } catch (Exception e) {
@@ -155,6 +177,8 @@ public class CustomerOrderAdapter extends ArrayAdapter<OrderData> {
 
                                 pDialog.hide();
                             }
+
+
                         }, new Response.ErrorListener() {
 
                     @Override
@@ -163,6 +187,7 @@ public class CustomerOrderAdapter extends ArrayAdapter<OrderData> {
 
                         pDialog.hide();
                     }
+
                 }) {
                     @Override
                     public Map<String, String> getHeaders() {

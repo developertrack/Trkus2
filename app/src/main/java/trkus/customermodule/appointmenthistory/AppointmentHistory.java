@@ -1,4 +1,4 @@
-package trkus.customermodule.customerorder;
+package trkus.customermodule.appointmenthistory;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -28,26 +28,26 @@ import util.AppController;
 import util.UrlConstant;
 import util.UserSessionManager;
 
-public class CustomeOrderPage extends Fragment {
+public class AppointmentHistory  extends Fragment {
 
 
     Fragment fragment = null;
-    String[] SellerUserId, OrderId, Itemn, OrderDate, FirmName, FirmImage, OrderImage1;
+    String[] SellerUserId, OrderId, AppoinmentDate, PatientName, FirmName, FirmImage, PatientMobileNumber;
     ProgressDialog pDialog;
     String Tag = "Dashboard";
     ListView sellerlist;
-    ArrayList<OrderData> seller_data = null;
-    CustomerOrderAdapter selleradapter;
+    ArrayList<Appointmentdata> seller_data = null;
+    ApointmentAdapter selleradapter;
     String CategoryName, strtext;
     UserSessionManager session;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        getActivity().setTitle("Order History");
+        getActivity().setTitle("Appointment History");
         View view = inflater.inflate(R.layout.fragment_product_seller_listing, container, false);
         sellerlist = view.findViewById(R.id.sellerlist);
-        seller_data = new ArrayList<OrderData>();
+        seller_data = new ArrayList<Appointmentdata>();
         session = new UserSessionManager(getActivity());
 
         pDialog = new ProgressDialog(getActivity());
@@ -65,35 +65,28 @@ public class CustomeOrderPage extends Fragment {
             }
         });
 
-//        sellerlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view,
-//                                    int position, long id) {
-//                Toast.makeText(getActivity(), "You Clicked at " + FirmName[+position], Toast.LENGTH_SHORT).show();
-//
-//            }
-//        });
 
         return view;
 
     }
 
+
     public void getOrder(String id) {
-        JsonArrayRequest req = new JsonArrayRequest(UrlConstant.GET_Customer_Order_Url + id,
+        JsonArrayRequest req = new JsonArrayRequest(UrlConstant.GET_Customer_Appointment + id,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d(Tag, response.toString());
 
+//                        SellerUserId, OrderId, AppoinmentDate, PatientName, FirmName, FirmImage, PatientMobileNumber
+
                         SellerUserId = new String[response.length()];
                         OrderId = new String[response.length()];
-                        Itemn = new String[response.length()];
-                        FirmName = new String[response.length()];
-                        OrderDate = new String[response.length()];
+                        AppoinmentDate = new String[response.length()];
+                        PatientName = new String[response.length()];
                         FirmName = new String[response.length()];
                         FirmImage = new String[response.length()];
-                        OrderImage1 = new String[response.length()];
+                        PatientMobileNumber = new String[response.length()];
 
                         try {
 
@@ -104,17 +97,17 @@ public class CustomeOrderPage extends Fragment {
                                 SellerUserId[i] = person.getString("SellerUserId");
                                 OrderId[i] = person.getString("OrderId");
                                 Log.e("OrderId",OrderId[i]);
-                                Itemn[i] = person.getString("ItemName");
-                                OrderDate[i] = person.getString("OrderDate");
+                                AppoinmentDate[i] = person.getString("AppoinmentDate");
+                                PatientName[i] = person.getString("PatientName");
                                 FirmName[i] = person.getString("FirmName");
                                 FirmImage[i] = person.getString("FirmImage");
-                                OrderImage1[i] = person.getString("OrderImage1");
+                                PatientMobileNumber[i] = person.getString("PatientMobileNumber");
 
-                                seller_data.add(new OrderData(SellerUserId[i], OrderId[i], Itemn[i],
-                                        OrderDate[i], FirmName[i], FirmImage[i], OrderImage1[i]));
+                                seller_data.add(new Appointmentdata(SellerUserId[i], OrderId[i], AppoinmentDate[i],
+                                        PatientName[i], FirmName[i], FirmImage[i], PatientMobileNumber[i]));
                             }
                             if (getActivity()!=null) {
-                                selleradapter = new CustomerOrderAdapter(getActivity(), R.layout.customer_order_adapter, seller_data);
+                                selleradapter = new ApointmentAdapter(getActivity(), R.layout.customer_order_adapter, seller_data);
                                 sellerlist.setAdapter(selleradapter);
                                 selleradapter.notifyDataSetChanged();
                             }
@@ -140,6 +133,7 @@ public class CustomeOrderPage extends Fragment {
 
         AppController.getInstance().addToRequestQueue(req);
     }
+
 
 
 }

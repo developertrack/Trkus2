@@ -15,6 +15,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,7 +34,10 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.NetworkImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,7 +48,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import trkus.sellermodule.sellerordermodule.SellerAvailability;
 import trkus.services.com.trkus.R;
 import util.AppController;
 import util.MultipartRequest;
@@ -58,9 +65,10 @@ public class ProfileEdit extends Fragment {
     EditText et_full_name, gender, et_blood_group, et_industry_type, et_business_category, et_firm_name, et_address, et_state, et_pincode,
             et_landline, et_mobile, et_email, et_emergency_number;
     RelativeLayout layout_photo1, layout_photo2, layout_photo3;
-    ImageView photo1, photo2, photo3;
+    NetworkImageView photo1, photo2, photo3;
     String image_path1, image_path2, image_path3;
-    Button btn_save;
+    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
+    Button btn_save,availability;
     ProgressDialog pDialog;
     String[] blood_group = {"A+", "A-", "B", "B+", "AB+", "AB-", "O+", "O-"};
     String[] gender_type = {"Male", "Female"};
@@ -78,7 +86,10 @@ public class ProfileEdit extends Fragment {
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private String userChoosenTask;
     private ImageView ivImage;
-
+    Fragment fragment = null;
+    JSONObject data;
+    String TAG = "LoginActivity_TAG";
+    String result = "NA", response_string;
     private static boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
@@ -105,7 +116,7 @@ public class ProfileEdit extends Fragment {
 
         View view = inflater.inflate(R.layout.activity_profile_edit, container, false);
 //        news= (LinearLayout) view.findViewById(R.id.news);
-
+        boolean result = Utility.checkPermission(getActivity());
         et_full_name = view.findViewById(R.id.et_full_name);
         gender = view.findViewById(R.id.gender);
         et_blood_group = view.findViewById(R.id.et_blood_group);
@@ -120,6 +131,23 @@ public class ProfileEdit extends Fragment {
         et_email = view.findViewById(R.id.et_email);
         et_emergency_number = view.findViewById(R.id.et_emergency_number);
 
+        session = new UserSessionManager(getActivity());
+
+        getUserDetail(session.getKeyUserid());
+
+        availability= view.findViewById(R.id.availability);
+
+        availability.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragment = new SellerAvailability();
+                FragmentTransaction tx = getActivity().getSupportFragmentManager().beginTransaction();
+                tx.replace(R.id.flContent, fragment, "schedule");
+                tx.commit();
+                tx.addToBackStack(null);
+            }
+        });
+
         layout_photo1 = view.findViewById(R.id.layout_photo1);
         layout_photo2 = view.findViewById(R.id.layout_photo2);
         layout_photo3 = view.findViewById(R.id.layout_photo3);
@@ -127,8 +155,6 @@ public class ProfileEdit extends Fragment {
         photo1 = view.findViewById(R.id.photo1);
         photo2 = view.findViewById(R.id.photo2);
         photo3 = view.findViewById(R.id.photo3);
-        session = new UserSessionManager(getActivity());
-
         layout_photo1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -256,7 +282,7 @@ public class ProfileEdit extends Fragment {
                     @Override
                     public void onResponse(Object response) {
 
-                        Log.e("response", response.toString());
+                        Log.e("uploadresponse", response.toString());
                         pDialog.dismiss();
                     }
 
@@ -265,6 +291,7 @@ public class ProfileEdit extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         //TODO
+                        Log.e("response", error.toString());
                         pDialog.dismiss();
                     }
                 }));
@@ -359,6 +386,106 @@ public class ProfileEdit extends Fragment {
         return view;
 
     }
+
+
+
+    public void getUserDetail(String id) {
+
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                UrlConstant.GET_Seller_Profile_Update + id, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e(TAG, response.toString());
+                try {
+                    String Status = response.getString("Status");
+                    response_string = response.toString();
+                    data = response;
+                    if (Status.equals("false")) {
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                                try {
+                                    dlgAlert.setMessage(data.getString("Message"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                dlgAlert.setPositiveButton("OK", null);
+                                dlgAlert.setCancelable(true);
+                                dlgAlert.create().show();
+                            }
+                        });
+                        pDialog.dismiss();
+
+                    } else {
+
+//                        et_full_name, gender, et_blood_group, et_industry_type, et_business_category, et_firm_name, et_address, et_state, et_pincode,
+//                                et_landline, et_mobile, et_email, et_emergency_number;
+
+                        if(response.getString("FirmName").equals("null")){
+
+                        }else{
+
+                        et_full_name.setText(response.getString("Name"));
+                        gender.setText(response.getString("Gender"));
+                        et_blood_group.setText(response.getString("Bloodgroup"));
+                        et_firm_name.setText(response.getString("FirmName"));
+                        et_mobile.setText(response.getString("MobileNumber"));
+                        et_business_category.setText(response.getString("CategoryOfBusiness"));
+                        et_address.setText(response.getString("Address1"));
+                        et_email.setText(response.getString("EmailId"));
+//                        et_landline.setText(response.getString("LandLineNumber"));
+                        et_emergency_number.setText(response.getString("EmergencyMobileNumber"));
+                        et_industry_type.setText(response.getString("Industry"));
+                        et_state.setText(response.getString("StateName"));
+                        et_pincode.setText(response.getString("PinCode"));
+
+                            photo1.setImageUrl(response.getString("Image1"), imageLoader);
+                            photo2.setImageUrl(response.getString("Image2"), imageLoader);
+                            photo3.setImageUrl(response.getString("Image3"), imageLoader);
+
+                        }
+                    }
+
+                } catch (Exception e) {
+
+                }
+                pDialog.dismiss();
+                pDialog.hide();
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.e(TAG, "Error: " + error.getMessage());
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                        dlgAlert.setMessage("Error while fetching data, please try again");
+                        dlgAlert.setPositiveButton("OK", null);
+                        dlgAlert.setCancelable(true);
+                        dlgAlert.create().show();
+                    }
+                });
+                pDialog.hide();
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+
+        AppController.getInstance().addToRequestQueue(jsonObjReq, "profile edit");
+
+    }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

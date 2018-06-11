@@ -895,24 +895,29 @@ public class CustomerProfileEdit extends Fragment {
 
                     } else {
 
-                        et_full_name.setText(response.getString("Name"));
-                        gender.setText(response.getString("Gender"));
-                        et_dateofbirth.setText(response.getString("DOB"));
-                        et_email.setText(response.getString("EmailId"));
-                        et_aadhar.setText(response.getString("AdharNumber"));
-                        et_blood_group.setText(response.getString("Bloodgroup"));
-                        et_marital_status.setText(response.getString("MaritalStatus"));
-                        et_occupation.setText(response.getString("Occuption"));
-                        et_mobile.setText(response.getString("MobileNumber"));
-                        et_address.setText(response.getString("Address1"));
-                        et_pincode.setText(response.getString("PinCode"));
-                        et_landline.setText(response.getString("LandLineNumber"));
-                        et_city.setText(response.getString("CityName"));
-                        et_state.setText(response.getString("StateName"));
-                        et_country.setText(response.getString("Country"));
-                        et_emergency_name.setText(response.getString("EmergencyName"));
-                        et_emergency_number.setText(response.getString("EmergencyMobileNumber"));
-                        et_emergency_relationship.setText(response.getString("EmergencyRelationShip"));
+                        if(response.getString("AdharNumber").equals("null")){
+
+                        }else {
+
+                            et_full_name.setText(response.getString("Name"));
+                            gender.setText(response.getString("Gender"));
+                            et_dateofbirth.setText(response.getString("DOB"));
+                            et_email.setText(response.getString("EmailId"));
+                            et_aadhar.setText(response.getString("AdharNumber"));
+                            et_blood_group.setText(response.getString("Bloodgroup"));
+                            et_marital_status.setText(response.getString("MaritalStatus"));
+                            et_occupation.setText(response.getString("Occuption"));
+                            et_mobile.setText(response.getString("MobileNumber"));
+                            et_address.setText(response.getString("Address1"));
+                            et_pincode.setText(response.getString("PinCode"));
+                            et_landline.setText(response.getString("LandLineNumber"));
+                            et_city.setText(response.getString("CityName"));
+                            et_state.setText(response.getString("StateName"));
+                            et_country.setText(response.getString("Country"));
+                            et_emergency_name.setText(response.getString("EmergencyName"));
+                            et_emergency_number.setText(response.getString("EmergencyMobileNumber"));
+                            et_emergency_relationship.setText(response.getString("EmergencyRelationShip"));
+                        }
 
                     }
 

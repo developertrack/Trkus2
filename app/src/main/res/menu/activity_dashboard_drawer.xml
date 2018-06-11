@@ -15,7 +15,7 @@
         <item
             android:id="@+id/nav_appointment"
             android:icon="@drawable/appointment"
-            android:title="Appointments" />
+            android:title="Appointment History" />
         <item
             android:id="@+id/nav_dailyneeds"
             android:icon="@drawable/orderhistory"

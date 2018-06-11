@@ -83,7 +83,10 @@ public class ProductSellerAdapter extends ArrayAdapter<ProductSeller> {
         holder.seller_name_title.setText(getdata.getFirmName());
         holder.seller_address.setText(getdata.getAddress1() + " " + getdata.getPinCode());
         holder.seller_contact.setText(getdata.getMobileNumber());
-        holder.seller_icon.setImageUrl(getdata.getImage1(), imageLoader);
+        String temp = getdata.getImage1();
+
+        temp = temp.replaceAll(" ", "%20");
+        holder.seller_icon.setImageUrl(temp, imageLoader);
 
         holder.seller_call.setOnClickListener(new View.OnClickListener() {
             @Override

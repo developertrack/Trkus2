@@ -327,10 +327,11 @@ public class FavouiteContacts extends Fragment {
                                 seller_data.add(new FavouriteContactData(Name[i], Address[i], FirmName[i],
                                         MobileNumber[i], Id[i]));
                             }
-                            selleradapter = new FavouriteContactAdapter(getActivity(), R.layout.favouritecontact_adapter, seller_data);
-                            sellerlist.setAdapter(selleradapter);
-                            selleradapter.notifyDataSetChanged();
-
+                            if (getActivity()!=null) {
+                                selleradapter = new FavouriteContactAdapter(getActivity(), R.layout.favouritecontact_adapter, seller_data);
+                                sellerlist.setAdapter(selleradapter);
+                                selleradapter.notifyDataSetChanged();
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(getActivity(),
