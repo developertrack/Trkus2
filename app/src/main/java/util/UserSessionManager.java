@@ -18,6 +18,9 @@ public class UserSessionManager {
     public static final String KEY_USERID = "userid";
     // Email address (make variable public to access from outside)
     public static final String KEY_NUMBER = "number";
+
+
+    public static final String KEY_INDUSTRY = "number";
     // Sharedpref file name
     private static final String PREFER_NAME = "Trkus";
     // All Shared Preferences Keys
@@ -56,6 +59,27 @@ public class UserSessionManager {
         // commit changes
         editor.commit();
     }
+
+    public void createIndustrySession(String industry_type) {
+        // Storing login value as TRUE
+        editor.putBoolean(IS_USER_LOGIN, true);
+
+        editor.putString(KEY_INDUSTRY, industry_type);
+
+
+        // commit changes
+        editor.commit();
+    }
+
+    public String getIndustry() {
+
+        HashMap<String, String> user = getUserDetails();
+
+        String userid = user.get(KEY_INDUSTRY);
+
+        return userid;
+    }
+
 
     public boolean checkLogin() {
         // Check login status

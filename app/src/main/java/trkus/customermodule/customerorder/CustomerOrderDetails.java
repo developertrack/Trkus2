@@ -1,5 +1,6 @@
 package trkus.customermodule.customerorder;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -7,9 +8,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,6 +92,25 @@ public class CustomerOrderDetails extends Fragment {
                 reOrderData();
             }
         });
+
+        order_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(getActivity(),android.R.style.Theme_Translucent_NoTitleBar);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.image_dialog);
+                NetworkImageView photo= dialog.findViewById(R.id.photo);
+                Window window = dialog.getWindow();
+                WindowManager.LayoutParams wlp = window.getAttributes();
+                photo.setImageUrl(OrderImage1[0], imageLoader);
+                wlp.gravity = Gravity.CENTER;
+                wlp.flags &= ~WindowManager.LayoutParams.FLAG_BLUR_BEHIND;
+                window.setAttributes(wlp);
+                dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                dialog.show();
+            }
+        });
+
         getOrder(order_id);
 
         return convertView;

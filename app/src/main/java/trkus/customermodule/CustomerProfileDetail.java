@@ -138,7 +138,11 @@ public class CustomerProfileDetail extends Fragment {
 
                     } else {
                         if(response.getString("AdharNumber").equals("null")){
-
+                            fragment = new CustomerProfileEdit();
+                            FragmentTransaction tx = getActivity().getSupportFragmentManager().beginTransaction();
+                            tx.replace(R.id.flContent, fragment, "ProfileEdit");
+                            tx.commit();
+                            tx.addToBackStack(null);
                         }else {
 
                             name.setText(response.getString("Name"));

@@ -35,10 +35,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import trkus.commonmodule.NotiFicationFragmentNew;
 import trkus.commonmodule.WebpageLoad;
+import trkus.sellermodule.appointmentseller.SellerAppointmentHistory;
 import trkus.sellermodule.sellerfavouritecontacts.SellerFavouiteContacts;
-import trkus.sellermodule.sellerordermodule.SellerDetail;
-import trkus.sellermodule.sellerordermodule.SellerOrderListing;
+import trkus.sellermodule.sellerorderavailability.SellerDetail;
+import trkus.sellermodule.sellerorder.SellerOrderListing;
 import trkus.services.com.trkus.R;
 import util.AppController;
 import util.UrlConstant;
@@ -56,7 +58,7 @@ public class SellerDashboard extends AppCompatActivity implements NavigationView
     ProgressDialog pDialog;
     JSONObject data_jobject;
     String TAG = "LoginActivity_TAG";
-    String result = "NA", response_string;
+    String result = "NA", response_string,Industry;
     JSONObject data;
     String tag_json_obj = "json_obj_req";
     private ArrayList<Integer> ImagesArray = new ArrayList<Integer>();
@@ -87,16 +89,18 @@ public class SellerDashboard extends AppCompatActivity implements NavigationView
         session = new UserSessionManager(SellerDashboard.this);
         getUserDetail(session.getKeyUserid());
 
-//        fragment = new HomePage();
-//        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-//        tx.replace(R.id.flContent, fragment, "home");
-//        tx.commit();
+        fragment = new SellerHome();
+        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+        tx.replace(R.id.flContent, fragment, "home");
+        tx.commit();
     }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
+//        SellerHome
 //
         if (id == R.id.nav_profile) {
             Fragment fragment = new SellerDetail();
@@ -106,11 +110,21 @@ public class SellerDashboard extends AppCompatActivity implements NavigationView
             tx.addToBackStack(null);
 //
         } else if (id == R.id.nav_orderhistory) {
-            Fragment fragment = new SellerOrderListing();
-            FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-            tx.replace(R.id.flContent, fragment, "SellerOrderListing");
-            tx.commit();
-            tx.addToBackStack(null);
+
+            if(session.getIndustry().equals("Products")){
+                Fragment fragment = new SellerOrderListing();
+                FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+                tx.replace(R.id.flContent, fragment, "SellerOrderListing");
+                tx.commit();
+                tx.addToBackStack(null);
+            }else{
+                Fragment fragment = new SellerAppointmentHistory();
+                FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+                tx.replace(R.id.flContent, fragment, "SellerOrderListing");
+                tx.commit();
+                tx.addToBackStack(null);
+            }
+
 
         } else if (id == R.id.nav_favourite) {
             fragment = new SellerFavouiteContacts();
@@ -120,6 +134,12 @@ public class SellerDashboard extends AppCompatActivity implements NavigationView
             tx.addToBackStack(null);
         }else if (id == R.id.nav_share) {
             shareAppNew();
+        }else if (id == R.id.nav_notification) {
+            fragment = new NotiFicationFragmentNew();
+            FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+            tx.replace(R.id.flContent, fragment, "snotification");
+            tx.commit();
+            tx.addToBackStack(null);
         } else if (id == R.id.nav_aboutus) {
             Bundle bundle = new Bundle();
             bundle.putString("nav_aboutus", "http://trkus.tarule.com/Home/AboutUs");
@@ -131,7 +151,7 @@ public class SellerDashboard extends AppCompatActivity implements NavigationView
             tx.addToBackStack(null);
         }else if (id == R.id.nav_about_turkus) {
             Bundle bundle = new Bundle();
-            bundle.putString("nav_aboutus", "http://trkus.tarule.com/Home/AboutUs");
+            bundle.putString("nav_aboutus", "http://trkus.tarule.com/Home/CustomerCare");
             fragment = new WebpageLoad();
             fragment.setArguments(bundle);
             FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
@@ -244,6 +264,10 @@ public class SellerDashboard extends AppCompatActivity implements NavigationView
                         } else {
 
                             navUsername.setText(response.getString("Name"));
+                            Industry=response.getString("Industry");
+                            Log.e("createIndustrySession",Industry);
+
+                            session.createIndustrySession(Industry);
 
                             pDialog.dismiss();
                         }

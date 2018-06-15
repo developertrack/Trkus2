@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,6 +16,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -34,17 +37,19 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import trkus.services.com.trkus.R;
-import util.AppController;
-import util.MultipartRequest;
-import util.MultipartRequestParams;
 import util.UrlConstant;
 import util.UserSessionManager;
 import util.Utility;
+import util.VolleyMultipartRequest;
+import util.VolleySingleton;
 
 public class AddDailyNeedsItem extends Fragment {
 
@@ -124,40 +129,138 @@ public class AddDailyNeedsItem extends Fragment {
                     pDialog.show();
 
 
-                    MultipartRequestParams params = new MultipartRequestParams();
-                    params.put("CustomerUserId", session.getKeyUserid());
-                    params.put("Image1", imgFile);
-                    params.put("ItemName", str_itemlist);
-                    params.put("Title", str_title);
 
-//                    CustomerUserId,Image1,ItemName,Title​​​​​​​
+                    File imagefile = new File(imgFile);
+                    FileInputStream fis = null;
+                    try {
+                        fis = new FileInputStream(imagefile);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
 
-                    AppController.getInstance().addToRequestQueue(new MultipartRequest(Request.Method.POST, params, UrlConstant.POST_Daily_Need_Item, new Response.Listener() {
+                    Bitmap bm = BitmapFactory.decodeStream(fis);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bm.compress(Bitmap.CompressFormat.JPEG, 100 , baos);
+                    final byte[] b = baos.toByteArray();
+
+
+                    VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, UrlConstant.POST_Daily_Need_Item, new Response.Listener<NetworkResponse>() {
                         @Override
-                        public void onResponse(Object response) {
+                        public void onResponse(NetworkResponse response) {
+                            String resultResponse = new String(response.data);
+                            Log.e("resultResponse",resultResponse);
 
-                            Log.e("response", response.toString());
                             try {
-                                JSONObject mainObject = new JSONObject(response.toString());
-                                Toast.makeText(getActivity(), mainObject.getString("Message"), Toast.LENGTH_LONG).show();
+                                final JSONObject mainObject = new JSONObject(resultResponse);
+//                                Toast.makeText(getActivity(), mainObject.getString("Message"), Toast.LENGTH_LONG).show();
+                                Log.e("resultResponse1",mainObject.toString());
+                                String Status = mainObject.getString("Status");
+
+                                if (Status.equals("false")) {
+
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                                            try {
+                                                dlgAlert.setMessage(mainObject.getString("Message"));
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                            dlgAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    popBackStack(getActivity().getSupportFragmentManager());
+                                                }
+                                            });
+                                            dlgAlert.setCancelable(true);
+                                            dlgAlert.create().show();
+                                        }
+                                    });
+
+                                } else {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                                            try {
+                                                dlgAlert.setMessage(mainObject.getString("Message"));
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                            dlgAlert.setPositiveButton("OK",  null);
+                                            dlgAlert.setCancelable(true);
+                                            dlgAlert.create().show();
+
+                                        }
+                                    });
+
+                                }
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-//                            {"CustomerUserId":45,"Message":"Order Sucessfully!","OrderId":"TRKUS180505115032389","Status":true}
-
-
                             pDialog.dismiss();
+                            // parse success output
                         }
-
-
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            //TODO
+                            error.printStackTrace();
                             pDialog.dismiss();
                         }
-                    }));
+                    }) {
+                        @Override
+                        protected Map<String, String> getParams() {
+                            Map<String, String> params = new HashMap<>();
+                            params.put("CustomerUserId", session.getKeyUserid());
+                            params.put("ItemName", str_itemlist);
+                            params.put("Title", str_title);
+                            return params;
+                        }
+
+                        @Override
+                        protected Map<String, DataPart> getByteData() {
+                            Map<String, DataPart> params = new HashMap<>();
+                            // file name could found file base or direct access from real path
+                            // for now just get bitmap data from ImageView
+                            params.put("Image1", new DataPart(System.currentTimeMillis() + ".jpg", b, "image/jpeg"));
+
+                            return params;
+                        }
+                    };
+
+                    VolleySingleton.getInstance(getActivity()).addToRequestQueue(multipartRequest);
+
+
+//                    CustomerUserId,Image1,ItemName,Title​​​​​​​
+
+//                    AppController.getInstance().addToRequestQueue(new MultipartRequest(Request.Method.POST, params, UrlConstant.POST_Daily_Need_Item, new Response.Listener() {
+//                        @Override
+//                        public void onResponse(Object response) {
+//
+//                            Log.e("response", response.toString());
+//                            try {
+//                                JSONObject mainObject = new JSONObject(response.toString());
+//                                Toast.makeText(getActivity(), mainObject.getString("Message"), Toast.LENGTH_LONG).show();
+//
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+////                            {"CustomerUserId":45,"Message":"Order Sucessfully!","OrderId":"TRKUS180505115032389","Status":true}
+//
+//
+//                            pDialog.dismiss();
+//                        }
+//
+//
+//                    }, new Response.ErrorListener() {
+//                        @Override
+//                        public void onErrorResponse(VolleyError error) {
+//                            //TODO
+//                            pDialog.dismiss();
+//                        }
+//                    }));
                 }
 
 
@@ -165,6 +268,11 @@ public class AddDailyNeedsItem extends Fragment {
         });
 
         return view;
+    }
+
+    public static void popBackStack(FragmentManager manager){
+        FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
+        manager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     private void selectImage() {
@@ -274,4 +382,6 @@ public class AddDailyNeedsItem extends Fragment {
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
-}
+
+    }
+

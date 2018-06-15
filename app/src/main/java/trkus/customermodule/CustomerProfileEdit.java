@@ -233,7 +233,6 @@ public class CustomerProfileEdit extends Fragment {
                     return;
                 }
 
-                pDialog.show();
 
                 UpdateUser();
 

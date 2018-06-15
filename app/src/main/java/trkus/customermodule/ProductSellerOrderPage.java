@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,6 +27,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -39,6 +41,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,11 +51,11 @@ import java.util.Map;
 import trkus.customermodule.customerorder.CustomeOrderPage;
 import trkus.services.com.trkus.R;
 import util.AppController;
-import util.MultipartRequest;
-import util.MultipartRequestParams;
 import util.UrlConstant;
 import util.UserSessionManager;
 import util.Utility;
+import util.VolleyMultipartRequest;
+import util.VolleySingleton;
 
 import static util.AppController.TAG;
 
@@ -76,6 +79,8 @@ public class ProductSellerOrderPage extends Fragment {
     int order_status = 0;
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private String userChoosenTask;
+    byte[] imgbytedata;
+    boolean result;
 
     public static String getPath(Context context, Uri uri) {
         String result = null;
@@ -143,6 +148,7 @@ public class ProductSellerOrderPage extends Fragment {
             }
         });
 
+        result = Utility.checkPermission(getActivity());
 
         addtofavourite.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,21 +178,33 @@ public class ProductSellerOrderPage extends Fragment {
                     pDialog.show();
 
 
-                    MultipartRequestParams params = new MultipartRequestParams();
-                    params.put("SellerUserId", SellerUserId);
-                    params.put("CustomerUserId", session.getKeyUserid());
-                    params.put("ItemName", str_itemlist);
-                    params.put("Image1", imgFile);
+                        String filepath = "/sdcard/temp.png";
+                        File imagefile = new File(imgFile);
+                        FileInputStream fis = null;
+                        try {
+                            fis = new FileInputStream(imagefile);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
 
-                    AppController.getInstance().addToRequestQueue(new MultipartRequest(Request.Method.POST, params, UrlConstant.Post_Order_Url, new Response.Listener() {
+                        Bitmap bm = BitmapFactory.decodeStream(fis);
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bm.compress(Bitmap.CompressFormat.JPEG, 100 , baos);
+                        final byte[] b = baos.toByteArray();
+
+
+
+
+                    VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, UrlConstant.Post_Order_Url, new Response.Listener<NetworkResponse>() {
                         @Override
-                        public void onResponse(Object response) {
+                        public void onResponse(NetworkResponse response) {
+                            String resultResponse = new String(response.data);
+                            Log.e("resultResponse",resultResponse);
 
-                            Log.e("response", response.toString());
                             try {
-                                final JSONObject mainObject = new JSONObject(response.toString());
+                                final JSONObject mainObject = new JSONObject(resultResponse);
 //                                Toast.makeText(getActivity(), mainObject.getString("Message"), Toast.LENGTH_LONG).show();
-
+                                Log.e("resultResponse1",mainObject.toString());
                                 String Status = mainObject.getString("Status");
 
                                 if (Status.equals("false")) {
@@ -236,22 +254,39 @@ public class ProductSellerOrderPage extends Fragment {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-//                            {"CustomerUserId":45,"Message":"Order Sucessfully!","OrderId":"TRKUS180505115032389","Status":true}
-
-
                             pDialog.dismiss();
+                            // parse success output
                         }
-
-
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            //TODO
+                            error.printStackTrace();
                             pDialog.dismiss();
                         }
-                    }));
-                }
+                    }) {
+                        @Override
+                        protected Map<String, String> getParams() {
+                            Map<String, String> params = new HashMap<>();
+                            params.put("SellerUserId", SellerUserId);
+                            params.put("CustomerUserId", session.getKeyUserid());
+                            params.put("ItemName", str_itemlist);
+                            return params;
+                        }
 
+                        @Override
+                        protected Map<String, DataPart> getByteData() {
+                            Map<String, DataPart> params = new HashMap<>();
+                            // file name could found file base or direct access from real path
+                            // for now just get bitmap data from ImageView
+                            params.put("Image1", new DataPart(System.currentTimeMillis() + ".jpg", b, "image/jpeg"));
+
+                            return params;
+                        }
+                    };
+
+                    VolleySingleton.getInstance(getActivity()).addToRequestQueue(multipartRequest);
+
+                }
 
             }
         });
@@ -259,6 +294,8 @@ public class ProductSellerOrderPage extends Fragment {
         return view;
 
     }
+
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -275,7 +312,7 @@ public class ProductSellerOrderPage extends Fragment {
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                boolean result = Utility.checkPermission(getActivity());
+
 
                 if (items[item].equals("Take Photo")) {
                     userChoosenTask = "Take Photo";

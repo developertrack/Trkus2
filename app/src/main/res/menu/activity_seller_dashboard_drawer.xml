@@ -14,10 +14,6 @@
             android:title="Customer Order" />
 
         <item
-            android:id="@+id/nav_myseller"
-            android:icon="@drawable/myseller"
-            android:title="My Customer" />
-        <item
             android:id="@+id/nav_favourite"
             android:icon="@drawable/aboutus"
             android:title="Favourite Contacts" />
@@ -43,7 +39,7 @@
             <item
                 android:id="@+id/nav_about_turkus"
                 android:icon="@drawable/aboutus"
-                android:title="About Turkus" />
+                android:title="Contact US" />
 
             <item
                 android:id="@+id/nav_rateapp"

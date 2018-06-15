@@ -6,7 +6,7 @@ package util;
 
 public class UrlConstant {
 //    http://webservicestrkus.tarule.com/
-    public static String base_url = "http://webservicestrkus.tarule.com/";
+    public static String base_url = "http://webapi.trkus.com/";
     public static String LOGIN_URL = base_url + "api/Account/UserRegistration";
     public static String RESEND_OTP = base_url + "api/Account/ResendOTPRegistration";
     public static String VERIFY_URL = base_url + "api/Account/VerifyOTP";
@@ -42,4 +42,8 @@ public class UrlConstant {
     public static String GET_Seller_Availability=base_url+"api/Seller/GetShedule?SellerId=";
     public static String POST_Seller_Appointment=base_url+"api/Order/AddAppointment";
     public static String GET_Customer_Appointment=base_url+"api/Order/GetAppointmentHistory?CustomerId=";
+    public static String GET_SELLER_DASHBOARD=base_url+"api/Seller/GetSellerDashBoard?SellerId=";
+    public static String GET_Notification=base_url+"api/Account/GetNotification";
+    public static String GET_Seller_Order_Detail=base_url+"api/Seller/GetCustomerOrderDetails?SellerId=";
+    public static String GET_Seller_Appointment_History=base_url+"/api/Seller/GetCustomerAppoinment?SellerId=";
 }

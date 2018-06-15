@@ -92,6 +92,7 @@ public class SellerFavouriteContactAdapter extends ArrayAdapter<SellerFavouriteC
                     .findViewById(R.id.btn_edit);
 
             holder.btn_edit.setTag(position);
+            holder.btn_remove.setTag(position);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -119,6 +120,8 @@ public class SellerFavouriteContactAdapter extends ArrayAdapter<SellerFavouriteC
 
                 pDialog.setMessage("Loading...");
                 pDialog.show();
+                pos = position;
+                getdata = dataget.get(position);
 
                 JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                         UrlConstant.GET_Seller_RemoveFavouriteContact_Url + getdata.getId(), new Response.Listener<JSONObject>() {

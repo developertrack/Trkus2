@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -34,17 +36,19 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import trkus.services.com.trkus.R;
-import util.AppController;
-import util.MultipartRequest;
-import util.MultipartRequestParams;
 import util.UrlConstant;
 import util.UserSessionManager;
 import util.Utility;
+import util.VolleyMultipartRequest;
+import util.VolleySingleton;
 
 public class AddDocumentPage extends Fragment {
 
@@ -119,41 +123,130 @@ public class AddDocumentPage extends Fragment {
                 pDialog.setMessage("Loading...");
                 pDialog.show();
 
-                MultipartRequestParams params = new MultipartRequestParams();
-                params.put("CustomerUserId", session.getKeyUserid());
-                params.put("Image", imgFile);
-                params.put("Subject", str_subject);
-                params.put("Remarks", str_remarks);
+                File imagefile = new File(imgFile);
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(imagefile);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
 
-                AppController.getInstance().addToRequestQueue(new MultipartRequest(Request.Method.POST, params, UrlConstant.POST_Important_Document, new Response.Listener() {
+                Bitmap bm = BitmapFactory.decodeStream(fis);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bm.compress(Bitmap.CompressFormat.JPEG, 100 , baos);
+                final byte[] b = baos.toByteArray();
+
+
+                VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, UrlConstant.POST_Important_Document, new Response.Listener<NetworkResponse>() {
                     @Override
-                    public void onResponse(Object response) {
+                    public void onResponse(NetworkResponse response) {
+                        String resultResponse = new String(response.data);
+                        Log.e("resultResponse",resultResponse);
 
-                        Log.e("response", response.toString());
                         try {
-                            JSONObject mainObject = new JSONObject(response.toString());
-                            Toast.makeText(getActivity(), mainObject.getString("Message"), Toast.LENGTH_LONG).show();
+                            final JSONObject mainObject = new JSONObject(resultResponse);
+//                                Toast.makeText(getActivity(), mainObject.getString("Message"), Toast.LENGTH_LONG).show();
+                            Log.e("resultResponse1",mainObject.toString());
+                            String Status = mainObject.getString("Status");
+
+                            if (Status.equals("false")) {
+
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                                        try {
+                                            dlgAlert.setMessage(mainObject.getString("Message"));
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        dlgAlert.setPositiveButton("OK", null);
+                                        dlgAlert.setCancelable(true);
+                                        dlgAlert.create().show();
+                                    }
+                                });
+
+                            } else {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                                        try {
+                                            dlgAlert.setMessage(mainObject.getString("Message"));
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        dlgAlert.setPositiveButton("OK",  null);
+                                        dlgAlert.setCancelable(true);
+                                        dlgAlert.create().show();
+
+                                    }
+                                });
+
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-
                         pDialog.dismiss();
+                        // parse success output
                     }
-
-
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //TODO
+                        error.printStackTrace();
                         pDialog.dismiss();
                     }
-                }));
-            }
+                }) {
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("CustomerUserId", session.getKeyUserid());
+                        params.put("Subject", str_subject);
+                        params.put("Remarks", str_remarks);
+                        return params;
+                    }
+
+                    @Override
+                    protected Map<String, DataPart> getByteData() {
+                        Map<String, DataPart> params = new HashMap<>();
+                        // file name could found file base or direct access from real path
+                        // for now just get bitmap data from ImageView
+                        params.put("Image", new DataPart(System.currentTimeMillis() + ".jpg", b, "image/jpeg"));
+
+                        return params;
+                    }
+                };
+
+                VolleySingleton.getInstance(getActivity()).addToRequestQueue(multipartRequest);
 
 
-        });
+//                AppController.getInstance().addToRequestQueue(new MultipartRequest(Request.Method.POST, params, UrlConstant.POST_Important_Document, new Response.Listener() {
+//                    @Override
+//                    public void onResponse(Object response) {
+//
+//                        Log.e("response", response.toString());
+//                        try {
+//                            JSONObject mainObject = new JSONObject(response.toString());
+//                            Toast.makeText(getActivity(), mainObject.getString("Message"), Toast.LENGTH_LONG).show();
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//
+//
+//                        pDialog.dismiss();
+//                    }
+//
+//
+//                }, new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        //TODO
+//                        pDialog.dismiss();
+                    }
+                });
+
 
         return view;
     }

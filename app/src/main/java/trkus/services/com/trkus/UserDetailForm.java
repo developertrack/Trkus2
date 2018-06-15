@@ -39,8 +39,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import trkus.sellermodule.SellerDashboard;
 import util.AppController;
 import util.UrlConstant;
+import util.UserSessionManager;
 
 public class UserDetailForm extends AppCompatActivity {
 
@@ -55,8 +57,10 @@ public class UserDetailForm extends AppCompatActivity {
     JSONObject data_jobject;
     Intent intent;
     Location location = null;
-    String UserTypeId, MobileNumber;
+    JSONObject data;
+    String UserTypeId, OTP, MobileNumber, UserId, response_string;
     Button next;
+    UserSessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +73,7 @@ public class UserDetailForm extends AppCompatActivity {
         detect = findViewById(R.id.detect);
         next = findViewById(R.id.next);
 
+        session = new UserSessionManager(UserDetailForm.this);
         intent = getIntent();
         UserTypeId = intent.getStringExtra("UserTypeId");
         MobileNumber = intent.getStringExtra("MobileNumber");
@@ -115,7 +120,6 @@ public class UserDetailForm extends AppCompatActivity {
                 getCompleteAddressString(location.getLatitude(), location.getLongitude());
             }
         });
-
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -213,6 +217,7 @@ public class UserDetailForm extends AppCompatActivity {
                                         android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(UserDetailForm.this);
                                         try {
                                             dlgAlert.setMessage(response.getString("Message"));
+
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
@@ -223,10 +228,34 @@ public class UserDetailForm extends AppCompatActivity {
                                 });
 
                             } else {
-                                Intent verification = new Intent(UserDetailForm.this, LoginActivity.class);
-                                verification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(verification);
-                            }
+                                response_string = response.toString();
+                                data = response;
+                                MobileNumber = data.getString("MobileNumber");
+                                OTP = data.getString("OTP");
+                                UserTypeId = data.getString("UserTypeId");
+                                UserId = data.getString("UserId");
+                                if (UserTypeId.equals("1")) {
+                                    Intent verification = new Intent(UserDetailForm.this, SellerDashboard.class);
+                                    verification.putExtra("MobileNumber", MobileNumber);
+                                    verification.putExtra("UserTypeId", UserTypeId);
+                                    verification.putExtra("UserId", UserId);
+
+                                    session.createUserLoginSession(UserTypeId, UserId, MobileNumber);
+
+                                    verification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(verification);
+                                }
+                                if (UserTypeId.equals("2")) {
+                                    Intent verification = new Intent(UserDetailForm.this, Dashboard.class);
+                                    verification.putExtra("MobileNumber", MobileNumber);
+                                    verification.putExtra("UserTypeId", UserTypeId);
+                                    verification.putExtra("UserId", UserId);
+
+                                    session.createUserLoginSession(UserTypeId, UserId, MobileNumber);
+
+                                    verification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(verification);
+                                }                            }
 
                         } catch (Exception e) {
 

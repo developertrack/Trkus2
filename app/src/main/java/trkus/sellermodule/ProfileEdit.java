@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -30,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -45,20 +47,22 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import trkus.sellermodule.sellerordermodule.SellerAvailability;
+import trkus.sellermodule.sellerorderavailability.SellerAvailability;
 import trkus.services.com.trkus.R;
 import util.AppController;
-import util.MultipartRequest;
 import util.MultipartRequestParams;
 import util.UrlConstant;
 import util.UserSessionManager;
 import util.Utility;
+import util.VolleyMultipartRequest;
+import util.VolleySingleton;
 
 public class ProfileEdit extends Fragment {
 
@@ -80,7 +84,7 @@ public class ProfileEdit extends Fragment {
     String stateid, categoryid, bcategoryid;
     String str_full_name, str_gender, str_blood_group, str_industry_type, str_business_category, str_firm_name, str_address, str_state, str_pincode,
             str_landline, str_mobile, str_email, str_emergency_number;
-    String imgFile = "", path1 = "", path2 = "", path3 = "";
+    String imgFile = "", path1 = "a", path2 = "a", path3 = "a";
     int sel = 0;
     ScrollView scrollprofile;
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
@@ -261,40 +265,110 @@ public class ProfileEdit extends Fragment {
 
                 pDialog.show();
                 MultipartRequestParams params = new MultipartRequestParams();
-                params.put("UserId", session.getKeyUserid());
-                params.put("MobileNumber", str_mobile);
-                params.put("Name", str_full_name);
-                params.put("BloodGroup", str_blood_group);
-                params.put("Gender", str_gender);
-                params.put("Industry", str_industry_type);
-                params.put("BusinessCategoryId", bcategoryid);
-                params.put("FirmName", str_firm_name);
-                params.put("Address1", str_address);
-                params.put("StateName", str_state);
-                params.put("PinCode", str_pincode);
-                params.put("LandLineNumber", str_landline);
-                params.put("EmailId", str_email);
-                params.put("EmergencyNumber", str_emergency_number);
-                params.put("Image1", path1);
-                params.put("Image2", path2);
-                params.put("Image3", path3);
-                AppController.getInstance().addToRequestQueue(new MultipartRequest(Request.Method.POST, params, UrlConstant.GETADD_SEELER_PROFILE, new Response.Listener() {
+
+
+
+                VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, UrlConstant.GETADD_SEELER_PROFILE, new Response.Listener<NetworkResponse>() {
                     @Override
-                    public void onResponse(Object response) {
+                    public void onResponse(NetworkResponse response) {
+                        String resultResponse = new String(response.data);
+                        Log.e("resultResponse",resultResponse);
 
-                        Log.e("uploadresponse", response.toString());
+                        try {
+                            final JSONObject mainObject = new JSONObject(resultResponse);
+//                                Toast.makeText(getActivity(), mainObject.getString("Message"), Toast.LENGTH_LONG).show();
+                            Log.e("resultResponse1",mainObject.toString());
+                            String Status = mainObject.getString("Status");
+
+                            if (Status.equals("false")) {
+
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                                        try {
+                                            dlgAlert.setMessage(mainObject.getString("Message"));
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        dlgAlert.setPositiveButton("OK", null);
+                                        dlgAlert.setCancelable(true);
+                                        dlgAlert.create().show();
+                                    }
+                                });
+
+                            } else {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                                        try {
+                                            dlgAlert.setMessage(mainObject.getString("Message"));
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        dlgAlert.setPositiveButton("OK",  null);
+                                        dlgAlert.setCancelable(true);
+                                        dlgAlert.create().show();
+
+                                    }
+                                });
+
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         pDialog.dismiss();
+                        // parse success output
                     }
-
-
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //TODO
-                        Log.e("response", error.toString());
+                        error.printStackTrace();
                         pDialog.dismiss();
                     }
-                }));
+                }) {
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("UserId", session.getKeyUserid());
+                        params.put("MobileNumber", str_mobile);
+                        params.put("Name", str_full_name);
+                        params.put("BloodGroup", str_blood_group);
+                        params.put("Gender", str_gender);
+                        params.put("Industry", str_industry_type);
+                        params.put("BusinessCategoryId", bcategoryid);
+                        params.put("FirmName", str_firm_name);
+                        params.put("Address1", str_address);
+                        params.put("StateName", str_state);
+                        params.put("PinCode", str_pincode);
+                        params.put("LandLineNumber", str_landline);
+                        params.put("EmailId", str_email);
+                        params.put("EmergencyNumber", str_emergency_number);
+                        return params;
+                    }
+
+                    @Override
+                    protected Map<String, DataPart> getByteData() {
+                        Map<String, DataPart> params = new HashMap<>();
+                        // file name could found file base or direct access from real path
+                        // for now just get bitmap data from ImageView
+                        if(!path1.equals("a")) {
+                            params.put("Image1", new DataPart(System.currentTimeMillis() + ".jpg", getdata(path1), "image/jpeg"));
+                        }
+
+                        if(!path2.equals("a")) {
+                            params.put("Image2", new DataPart(System.currentTimeMillis() + ".jpg", getdata(path2), "image/jpeg"));
+                        }
+                        if(!path3.equals("a")) {
+                            params.put("Image3", new DataPart(System.currentTimeMillis() + ".jpg", getdata(path3), "image/jpeg"));
+                        }
+                        return params;
+                    }
+                };
+
+                VolleySingleton.getInstance(getActivity()).addToRequestQueue(multipartRequest);
 
             }
         });
@@ -387,6 +461,23 @@ public class ProfileEdit extends Fragment {
 
     }
 
+    public byte[] getdata(String mfile){
+        String filepath = "/sdcard/temp.png";
+        File imagefile = new File(mfile);
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(imagefile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Bitmap bm = BitmapFactory.decodeStream(fis);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 100 , baos);
+        final byte[] b = baos.toByteArray();
+
+        return b;
+    }
 
 
     public void getUserDetail(String id) {
@@ -593,7 +684,7 @@ public class ProfileEdit extends Fragment {
 
 //        BCategoryId,BCategoryName
 
-        JsonArrayRequest req = new JsonArrayRequest("http://webservicestrkus.tarule.com/api/Account/GetBusinessCategory?CategoryId=" + id,
+        JsonArrayRequest req = new JsonArrayRequest("http://webapi.trkus.com/api/Account/GetBusinessCategory?CategoryId=" + id,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {

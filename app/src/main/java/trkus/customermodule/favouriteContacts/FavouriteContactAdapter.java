@@ -92,6 +92,7 @@ public class FavouriteContactAdapter extends ArrayAdapter<FavouriteContactData> 
                     .findViewById(R.id.btn_edit);
 
             holder.btn_edit.setTag(position);
+            holder.btn_remove.setTag(position);
             convertView.setTag(holder);
         } else {
             holder = (FavouriteContactAdapter.ViewHolder) convertView.getTag();
@@ -119,6 +120,7 @@ public class FavouriteContactAdapter extends ArrayAdapter<FavouriteContactData> 
                 pDialog.setMessage("Loading...");
                 pDialog.show();
 
+                getdata = dataget.get(position);
                 JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                         UrlConstant.GET_Customer_RemoveFavouriteContact_Url + getdata.getId(), new Response.Listener<JSONObject>() {
 
@@ -135,7 +137,7 @@ public class FavouriteContactAdapter extends ArrayAdapter<FavouriteContactData> 
 
                             } else {
                                 Toast.makeText(context, response.getString("Message"), Toast.LENGTH_LONG).show();
-                                dataget.remove(pos);
+                                dataget.remove(position);
                                 notifyDataSetChanged();
                             }
                             pDialog.dismiss();

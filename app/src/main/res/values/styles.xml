@@ -21,6 +21,19 @@
     <style name="DrawerIconStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="color">@android:color/black</item>
     </style>
+    <style name="CustomTextViewSmall" parent="@android:style/TextAppearance">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_size_12sp</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textColor">@color/textcolor_child</item>
 
-
+    </style>
+    <style name="CustomTextViewNormal" parent="@android:style/TextAppearance">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/textcolor_main</item>
+        <item name="android:textSize">@dimen/text_size_13sp</item>
+        <item name="android:gravity">left</item>
+    </style>
 </resources>
