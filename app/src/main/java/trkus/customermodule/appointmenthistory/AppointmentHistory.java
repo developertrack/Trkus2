@@ -107,6 +107,7 @@ public class AppointmentHistory  extends Fragment {
                                         PatientName[i], FirmName[i], FirmImage[i], PatientMobileNumber[i]));
                             }
                             if (getActivity()!=null) {
+//                                Collections.reverse(seller_data);
                                 selleradapter = new ApointmentAdapter(getActivity(), R.layout.customer_order_adapter, seller_data);
                                 sellerlist.setAdapter(selleradapter);
                                 selleradapter.notifyDataSetChanged();

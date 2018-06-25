@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +29,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
@@ -86,33 +86,34 @@ public class ProfileEdit extends Fragment {
             str_landline, str_mobile, str_email, str_emergency_number;
     String imgFile = "", path1 = "a", path2 = "a", path3 = "a";
     int sel = 0;
-    ScrollView scrollprofile;
+    NestedScrollView scrollprofile;
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private String userChoosenTask;
     private ImageView ivImage;
     Fragment fragment = null;
     JSONObject data;
     String TAG = "LoginActivity_TAG";
-    String result = "NA", response_string;
+    String response_string;
+    boolean result;
     private static boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     public static String getPath(Context context, Uri uri) {
-        String result = null;
+        String result1 = null;
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 int column_index = cursor.getColumnIndexOrThrow(proj[0]);
-                result = cursor.getString(column_index);
+                result1 = cursor.getString(column_index);
             }
             cursor.close();
         }
-        if (result == null) {
-            result = "Not found";
+        if (result1 == null) {
+            result1 = "Not found";
         }
-        return result;
+        return result1;
     }
 
     @Override
@@ -139,6 +140,7 @@ public class ProfileEdit extends Fragment {
 
         getUserDetail(session.getKeyUserid());
 
+        result = Utility.checkPermission(getActivity());
         availability= view.findViewById(R.id.availability);
 
         availability.setOnClickListener(new View.OnClickListener() {
@@ -307,7 +309,14 @@ public class ProfileEdit extends Fragment {
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
-                                        dlgAlert.setPositiveButton("OK",  null);
+                                        dlgAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                if (getFragmentManager().getBackStackEntryCount() > 0) {
+                                                    getFragmentManager().popBackStackImmediate();
+                                                }
+                                            }
+                                        });
                                         dlgAlert.setCancelable(true);
                                         dlgAlert.create().show();
 
@@ -925,7 +934,7 @@ public class ProfileEdit extends Fragment {
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                boolean result = Utility.checkPermission(getActivity());
+                result = Utility.checkPermission(getActivity());
 
                 if (items[item].equals("Take Photo")) {
                     userChoosenTask = "Take Photo";

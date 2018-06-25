@@ -4,14 +4,16 @@
     android:layout_height="match_parent"
     android:padding="4dp">
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollprofile"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
@@ -256,7 +258,6 @@
                 android:gravity="center_horizontal"
                 android:hint="Name"
                 android:inputType="text"
-                android:maxLength="10"
                 android:padding="4dp" />
 
             <EditText
@@ -294,5 +295,5 @@
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 </LinearLayout>

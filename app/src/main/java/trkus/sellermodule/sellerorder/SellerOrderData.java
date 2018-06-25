@@ -2,7 +2,7 @@ package trkus.sellermodule.sellerorder;
 
 public class SellerOrderData {
 
-    String SellerUserId, OrderId, ItemName, OrderDate, Name, Address, OrderImage1,MobileNumber;
+    String SellerUserId, OrderId, ItemName, OrderDate, Name, Address, OrderImage1, MobileNumber, CustomerUserId;
 
     public String getMobileNumber() {
         return MobileNumber;
@@ -12,9 +12,10 @@ public class SellerOrderData {
         MobileNumber = mobileNumber;
     }
 
-    public SellerOrderData(String s, String s1, String s2, String s3, String s4, String address, String s5, String s6) {
+    public SellerOrderData(String s, String s1, String s2, String s3, String s4, String address, String s5, String s6, String s7) {
 
         SellerUserId = s;
+
         OrderId = s1;
         ItemName = s2;
         OrderDate = s3;
@@ -22,6 +23,15 @@ public class SellerOrderData {
         Address = address;
         OrderImage1 = s5;
         MobileNumber=s6;
+        CustomerUserId = s7;
+    }
+
+    public String getCustomerUserId() {
+        return CustomerUserId;
+    }
+
+    public void setCustomerUserId(String customerUserId) {
+        CustomerUserId = customerUserId;
     }
 
     public String getSellerUserId() {

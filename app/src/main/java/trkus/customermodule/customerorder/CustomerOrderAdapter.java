@@ -121,6 +121,7 @@ public class CustomerOrderAdapter extends ArrayAdapter<OrderData> {
                 getdata = dataget.get(position);
                 Bundle bundle = new Bundle();
                 bundle.putString("OrderId", getdata.getOrderId());
+                bundle.putString("SellerUserId", getdata.getSellerUserId());
                 fragment = new CustomerOrderDetails();
                 fragment.setArguments(bundle);
                 FragmentTransaction tx = ((FragmentActivity)context).getSupportFragmentManager().beginTransaction();

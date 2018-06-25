@@ -38,6 +38,7 @@ import java.util.Map;
 import trkus.commonmodule.NotiFicationFragmentNew;
 import trkus.commonmodule.WebpageLoad;
 import trkus.sellermodule.appointmentseller.SellerAppointmentHistory;
+import trkus.sellermodule.sellerchat.CustomerChatList;
 import trkus.sellermodule.sellerfavouritecontacts.SellerFavouiteContacts;
 import trkus.sellermodule.sellerorderavailability.SellerDetail;
 import trkus.sellermodule.sellerorder.SellerOrderListing;
@@ -91,7 +92,7 @@ public class SellerDashboard extends AppCompatActivity implements NavigationView
 
         fragment = new SellerHome();
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-        tx.replace(R.id.flContent, fragment, "home");
+        tx.replace(R.id.flContent, fragment, "shome");
         tx.commit();
     }
 
@@ -103,6 +104,7 @@ public class SellerDashboard extends AppCompatActivity implements NavigationView
 //        SellerHome
 //
         if (id == R.id.nav_profile) {
+            clearBackStack();
             Fragment fragment = new SellerDetail();
             FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
             tx.replace(R.id.flContent, fragment, "home");
@@ -110,60 +112,72 @@ public class SellerDashboard extends AppCompatActivity implements NavigationView
             tx.addToBackStack(null);
 //
         } else if (id == R.id.nav_orderhistory) {
+            clearBackStack();
 
             if(session.getIndustry().equals("Products")){
                 Fragment fragment = new SellerOrderListing();
                 FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-                tx.replace(R.id.flContent, fragment, "SellerOrderListing");
+                tx.replace(R.id.flContent, fragment, "sSellerOrderListing");
                 tx.commit();
                 tx.addToBackStack(null);
             }else{
                 Fragment fragment = new SellerAppointmentHistory();
                 FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-                tx.replace(R.id.flContent, fragment, "SellerOrderListing");
+                tx.replace(R.id.flContent, fragment, "sSellerOrderListing");
                 tx.commit();
                 tx.addToBackStack(null);
             }
 
 
         } else if (id == R.id.nav_favourite) {
+            clearBackStack();
             fragment = new SellerFavouiteContacts();
             FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-            tx.replace(R.id.flContent, fragment, "favourite Contacts");
+            tx.replace(R.id.flContent, fragment, "sfavouriteContacts");
             tx.commit();
             tx.addToBackStack(null);
         }else if (id == R.id.nav_share) {
             shareAppNew();
         }else if (id == R.id.nav_notification) {
+            clearBackStack();
             fragment = new NotiFicationFragmentNew();
             FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
             tx.replace(R.id.flContent, fragment, "snotification");
             tx.commit();
             tx.addToBackStack(null);
         } else if (id == R.id.nav_aboutus) {
+            clearBackStack();
             Bundle bundle = new Bundle();
             bundle.putString("nav_aboutus", "http://trkus.tarule.com/Home/AboutUs");
             fragment = new WebpageLoad();
             fragment.setArguments(bundle);
             FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-            tx.replace(R.id.flContent, fragment, "aboutus");
+            tx.replace(R.id.flContent, fragment, "saboutus");
             tx.commit();
             tx.addToBackStack(null);
         }else if (id == R.id.nav_about_turkus) {
+            clearBackStack();
             Bundle bundle = new Bundle();
             bundle.putString("nav_aboutus", "http://trkus.tarule.com/Home/CustomerCare");
             fragment = new WebpageLoad();
             fragment.setArguments(bundle);
             FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-            tx.replace(R.id.flContent, fragment, "about_turkus");
+            tx.replace(R.id.flContent, fragment, "saboutturkus");
             tx.commit();
             tx.addToBackStack(null);
+        } else if (id == R.id.nav_message) {
+            clearBackStack();
+            fragment = new CustomerChatList();
+            FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+            tx.replace(R.id.flContent, fragment, "smessage");
+            tx.commit();
+            tx.addToBackStack(null);
+
         } else if (id == R.id.nav_rateapp) {
             rateApp();
         } else if (id == R.id.nav_refer) {
 
         }
-
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -210,8 +224,8 @@ public class SellerDashboard extends AppCompatActivity implements NavigationView
     private void clearBackStack() {
         FragmentManager manager = getSupportFragmentManager();
         if (manager.getBackStackEntryCount() > 0) {
-            FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
-            manager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            //FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
+            manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
 

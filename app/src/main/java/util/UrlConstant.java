@@ -46,4 +46,8 @@ public class UrlConstant {
     public static String GET_Notification=base_url+"api/Account/GetNotification";
     public static String GET_Seller_Order_Detail=base_url+"api/Seller/GetCustomerOrderDetails?SellerId=";
     public static String GET_Seller_Appointment_History=base_url+"/api/Seller/GetCustomerAppoinment?SellerId=";
+    public static String POST_SellerToCustomerChat = base_url + "api/Seller/SellerToCustomerChat";
+    public static String POST_CustometosellerChat = base_url + "api/Seller/CustometosellerChat";
+    public static String GET_SellerChatHistory = base_url + "api/Seller/GetSellerChatHistory?SellerId=";
+    public static String GET_CustomerChatHistory = base_url + "api/Seller/GetCustomerChatHistory?CustomerId=";
 }

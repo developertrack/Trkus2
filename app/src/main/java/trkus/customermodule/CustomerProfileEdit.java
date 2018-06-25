@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +22,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -65,7 +66,7 @@ public class CustomerProfileEdit extends Fragment {
     String str_full_name, str_gender, str_dateofbirth, str_aadhar, str_blood_group, str_marital_status, str_occupation, str_mobile, str_address,
             str_city, str_state, str_country, str_pincode, str_landline, str_email, str_emergency_name, str_emergency_number, str_emergency_relationship;
     int sel = 0;
-    ScrollView scrollprofile;
+    NestedScrollView scrollprofile;
     String TAG = "Edit_Customer_TAG";
     Calendar myCalendar;
     DatePickerDialog.OnDateSetListener date;
@@ -73,6 +74,7 @@ public class CustomerProfileEdit extends Fragment {
     String result = "NA", response_string;
     JSONObject data;
     private String userChoosenTask;
+    Fragment fragment = null;
 
     private static boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
@@ -397,7 +399,16 @@ public class CustomerProfileEdit extends Fragment {
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
-                                        dlgAlert.setPositiveButton("OK", null);
+                                        dlgAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                fragment = new CustomerProfileDetail();
+                                                FragmentTransaction tx = getActivity().getSupportFragmentManager().beginTransaction();
+                                                tx.replace(R.id.flContent, fragment, "CCustomerProfile");
+                                                tx.commit();
+                                                tx.addToBackStack(null);
+                                            }
+                                        });
                                         dlgAlert.setCancelable(true);
                                         dlgAlert.create().show();
                                     }
@@ -405,7 +416,28 @@ public class CustomerProfileEdit extends Fragment {
 
                             } else {
                                 pDialog.dismiss();
-                                Toast.makeText(getActivity(), "Account updated Successfully", Toast.LENGTH_LONG).show();
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                                        try {
+                                            dlgAlert.setMessage(response.getString("Message"));
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        dlgAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                if (getFragmentManager().getBackStackEntryCount() > 0) {
+                                                    getFragmentManager().popBackStackImmediate();
+                                                }
+                                            }
+                                        });
+                                        dlgAlert.setCancelable(true);
+                                        dlgAlert.create().show();
+
+                                    }
+                                });
                             }
 
                         } catch (Exception e) {

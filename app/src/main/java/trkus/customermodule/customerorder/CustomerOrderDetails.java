@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,7 +47,7 @@ public class CustomerOrderDetails extends Fragment {
 
 
     Fragment fragment = null;
-    TextView reorder, orderdetail, deliverstatue, firmname, order_date, orderid,orderdata;
+    TextView reorder, orderdetail, deliverstatue, firmname, order_date, orderid, orderdata, seller_sms, seller_call;
     NetworkImageView seller_icon,order_icon;
     ProgressDialog pDialog;
     UserSessionManager session;
@@ -55,6 +57,7 @@ public class CustomerOrderDetails extends Fragment {
     String[] SellerUserId, OrderId, ItemName, OrderDate, FirmName, FirmImage, OrderImage1;
     JSONObject data_jobject;
     String seller_id;
+    String msg_txt;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -81,8 +84,11 @@ public class CustomerOrderDetails extends Fragment {
                 .findViewById(R.id.orderid);
         orderdata= convertView
                 .findViewById(R.id.orderdata);
+        seller_sms = convertView
+                .findViewById(R.id.seller_sms);
         order_icon = convertView
                 .findViewById(R.id.order_icon);
+
 
         session = new UserSessionManager(getActivity());
 
@@ -112,6 +118,102 @@ public class CustomerOrderDetails extends Fragment {
         });
 
         getOrder(order_id);
+
+        seller_sms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText et_msg;
+                final Button next;
+                final Dialog pdialog = new Dialog(getActivity());
+                // Include dialog.xml file
+                pdialog.setContentView(R.layout.message_dialog_layout);
+
+                // set values for custom dialog components - text, image and button
+                et_msg = pdialog.findViewById(R.id.et_msg);
+                next = pdialog.findViewById(R.id.next);
+
+                pdialog.show();
+                Window window = pdialog.getWindow();
+                window.setLayout(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+                next.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Close dialog
+                        msg_txt = et_msg.getText().toString().trim();
+
+                        if (msg_txt.length() == 0) {
+                            Toast.makeText(getActivity(), "Write your message", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        pDialog = new ProgressDialog(getActivity());
+                        pDialog.setMessage("Loading...");
+                        pDialog.show();
+
+                        String tag_json_obj = "json_obj_req";
+
+                        data_jobject = new JSONObject();
+                        try {
+                            data_jobject.put("Message", msg_txt);
+                            data_jobject.put("SellerId", seller_id);
+                            data_jobject.put("CutsomerId", session.getKeyUserid());
+
+                        } catch (Exception e) {
+
+                        }
+
+                        Log.e("data_jobject", data_jobject.toString());
+
+
+                        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                                UrlConstant.POST_CustometosellerChat, data_jobject,
+                                new Response.Listener<JSONObject>() {
+
+                                    @Override
+                                    public void onResponse(final JSONObject response) {
+                                        Log.e(TAG, response.toString());
+                                        try {
+                                            String Status = response.getString("Status");
+
+                                            if (Status.equals("false")) {
+
+                                            } else {
+
+                                                Toast.makeText(getActivity(), "Message send successfully", Toast.LENGTH_LONG).show();
+
+                                            }
+
+                                        } catch (Exception e) {
+
+                                        }
+
+                                        pDialog.hide();
+                                    }
+                                }, new Response.ErrorListener() {
+
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                VolleyLog.e(TAG, "Error: " + error.getMessage());
+
+                                pDialog.hide();
+                            }
+                        }) {
+                            @Override
+                            public Map<String, String> getHeaders() {
+                                HashMap<String, String> headers = new HashMap<String, String>();
+                                headers.put("Content-Type", "application/json; charset=utf-8");
+                                return headers;
+                            }
+                        };
+
+                        AppController.getInstance().addToRequestQueue(jsonObjReq, tag_json_obj);
+                        pdialog.dismiss();
+                    }
+                });
+
+            }
+        });
 
         return convertView;
     }

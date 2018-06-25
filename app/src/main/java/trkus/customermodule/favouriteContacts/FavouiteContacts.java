@@ -52,7 +52,7 @@ public class FavouiteContacts extends Fragment {
     LinearLayout addcontact;
     String tag_json_obj = "json_obj_req";
     JSONObject data_jobject;
-    EditText name, et_mobile, location, sellertype;
+    EditText name, et_mobile, location, sellertype, opt_et_mobile;
     Button save;
     String str_name, str_et_mobile, str_location, str_sellertype;
 
@@ -99,6 +99,7 @@ public class FavouiteContacts extends Fragment {
                 et_mobile = dialog.findViewById(R.id.et_mobile);
                 location = dialog.findViewById(R.id.location);
                 sellertype = dialog.findViewById(R.id.sellertype);
+                opt_et_mobile = dialog.findViewById(R.id.opt_et_mobile);
                 dialog.show();
 
                 save = dialog.findViewById(R.id.save);
@@ -135,6 +136,7 @@ public class FavouiteContacts extends Fragment {
                             data_jobject.put("Location", str_location);
                             data_jobject.put("FirmName", str_sellertype);
                             data_jobject.put("CustomerId", session.getKeyUserid());
+                            data_jobject.put("OtherMobileNumber", opt_et_mobile.getText().toString());
 
                         } catch (Exception e) {
 

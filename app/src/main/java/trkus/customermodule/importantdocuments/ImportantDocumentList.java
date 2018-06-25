@@ -36,7 +36,7 @@ public class ImportantDocumentList extends Fragment {
     ListView sellerlist;
     LinearLayout adddocuments;
     Fragment fragment = null;
-    String[] Name, Subject, Remarks, File;
+    String[] Name, Subject = null, Remarks, File;
     UserSessionManager session;
     ProgressDialog pDialog;
     String Tag = "Dashboard";

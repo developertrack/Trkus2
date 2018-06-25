@@ -114,6 +114,7 @@ public class CustomeOrderPage extends Fragment {
                                         OrderDate[i], FirmName[i], FirmImage[i], OrderImage1[i]));
                             }
                             if (getActivity()!=null) {
+//                                Collections.reverse(seller_data);
                                 selleradapter = new CustomerOrderAdapter(getActivity(), R.layout.customer_order_adapter, seller_data);
                                 sellerlist.setAdapter(selleradapter);
                                 selleradapter.notifyDataSetChanged();

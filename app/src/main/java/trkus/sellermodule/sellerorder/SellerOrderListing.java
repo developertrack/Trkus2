@@ -32,7 +32,7 @@ public class SellerOrderListing extends Fragment {
 
 
     Fragment fragment = null;
-    String[] SellerUserId, OrderId, ItemName, OrderDate, Name, Address, OrderImage1,MobileNumber;
+    String[] SellerUserId, OrderId, ItemName, OrderDate, Name, Address, OrderImage1, MobileNumber, CustomerUserId;
 
     ProgressDialog pDialog;
     String Tag = "Dashboard";
@@ -66,19 +66,6 @@ public class SellerOrderListing extends Fragment {
             }
         });
 
-//        sellerlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view,
-//                                    int position, long id) {
-//                Toast.makeText(getActivity(), "You Clicked at " + Name[+position], Toast.LENGTH_SHORT).show();
-//
-//
-//
-//
-//            }
-//        });
-
         return view;
 
     }
@@ -98,6 +85,7 @@ public class SellerOrderListing extends Fragment {
                         Address = new String[response.length()];
                         OrderImage1 = new String[response.length()];
                         MobileNumber=new String[response.length()];
+                        CustomerUserId = new String[response.length()];
 
                         try {
 
@@ -113,9 +101,10 @@ public class SellerOrderListing extends Fragment {
                                 Address[i] = person.getString("Address");
                                 OrderImage1[i] = person.getString("OrderImage1");
                                 MobileNumber[i] = person.getString("MobileNumber");
+                                CustomerUserId[i] = person.getString("CustomerUserId");
 
                                 seller_data.add(new SellerOrderData(SellerUserId[i], OrderId[i], ItemName[i],
-                                        OrderDate[i], Name[i], Address[i], OrderImage1[i],MobileNumber[i]));
+                                        OrderDate[i], Name[i], Address[i], OrderImage1[i], MobileNumber[i], CustomerUserId[i]));
 
                             }
                             selleradapter = new SellerOrderAdapter(getActivity(), R.layout.seller_order_layout_adapter, seller_data);

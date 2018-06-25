@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -30,6 +29,7 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.NetworkImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,7 +55,7 @@ public class AddDocumentPage extends Fragment {
     EditText subject, remarks;
     RelativeLayout layout_photo1;
     Button next;
-    ImageView photo1;
+    NetworkImageView photo1;
     UserSessionManager session;
     String imgFile = "";
     ProgressDialog pDialog;
@@ -63,6 +63,7 @@ public class AddDocumentPage extends Fragment {
     int order_status = 0;
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private String userChoosenTask;
+    boolean result;
 
     public static String getPath(Context context, Uri uri) {
         String result = null;
@@ -91,7 +92,7 @@ public class AddDocumentPage extends Fragment {
         layout_photo1 = view.findViewById(R.id.layout_photo1);
         photo1 = view.findViewById(R.id.photo1);
         next = view.findViewById(R.id.next);
-
+        result = Utility.checkPermission(getActivity());
         session = new UserSessionManager(getActivity());
 
         layout_photo1.setOnClickListener(new View.OnClickListener() {
@@ -176,7 +177,14 @@ public class AddDocumentPage extends Fragment {
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
-                                        dlgAlert.setPositiveButton("OK",  null);
+                                        dlgAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                if (getFragmentManager().getBackStackEntryCount() > 0) {
+                                                    getFragmentManager().popBackStackImmediate();
+                                                }
+                                            }
+                                        });
                                         dlgAlert.setCancelable(true);
                                         dlgAlert.create().show();
 
@@ -260,8 +268,8 @@ public class AddDocumentPage extends Fragment {
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                boolean result = Utility.checkPermission(getActivity());
 
+                result = Utility.checkPermission(getActivity());
                 if (items[item].equals("Take Photo")) {
                     userChoosenTask = "Take Photo";
                     if (result)

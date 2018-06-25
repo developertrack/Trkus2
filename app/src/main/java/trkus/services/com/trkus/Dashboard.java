@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import trkus.commonmodule.NotiFicationFragmentNew;
 import trkus.commonmodule.WebpageLoad;
 import trkus.customermodule.CustomerProfileDetail;
 import trkus.customermodule.HomePage;
@@ -44,6 +45,7 @@ import trkus.customermodule.dailyneeds.DailyNeedsProductList;
 import trkus.customermodule.favouriteContacts.FavouiteContacts;
 import trkus.customermodule.importantdocuments.ImportantDocumentList;
 import trkus.customermodule.myseller.MySeller;
+import trkus.customermodule.sellerchat.SellerChatList;
 import util.AppController;
 import util.UrlConstant;
 import util.UserSessionManager;
@@ -92,6 +94,7 @@ public class Dashboard extends AppCompatActivity
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
         tx.replace(R.id.flContent, fragment, "CDashboard");
         tx.commit();
+
     }
 
 
@@ -101,6 +104,7 @@ public class Dashboard extends AppCompatActivity
         int id = item.getItemId();
 //
         if (id == R.id.nav_profile) {
+            clearBackStack();
             fragment = new CustomerProfileDetail();
             FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
             tx.replace(R.id.flContent, fragment, "CCustomerProfile");
@@ -108,6 +112,7 @@ public class Dashboard extends AppCompatActivity
             tx.addToBackStack(null);
 //            session.logoutUser();
         }  else if (id == R.id.nav_orderhistory) {
+            clearBackStack();
 
             fragment = new CustomeOrderPage();
             FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
@@ -116,6 +121,7 @@ public class Dashboard extends AppCompatActivity
             tx.addToBackStack(null);
 
         }else if (id == R.id.nav_appointment) {
+            clearBackStack();
 
             fragment = new AppointmentHistory();
             FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
@@ -124,6 +130,7 @@ public class Dashboard extends AppCompatActivity
             tx.addToBackStack(null);
 
         } else if (id == R.id.nav_dailyneeds) {
+            clearBackStack();
 
             fragment = new DailyNeedsProductList();
             FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
@@ -132,12 +139,14 @@ public class Dashboard extends AppCompatActivity
             tx.addToBackStack(null);
 
         } else if (id == R.id.nav_myseller) {
+            clearBackStack();
             fragment = new MySeller();
             FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
             tx.replace(R.id.flContent, fragment, "CMySeller");
             tx.commit();
             tx.addToBackStack(null);
         } else if (id == R.id.nav_impdocuments) {
+            clearBackStack();
             fragment = new ImportantDocumentList();
             FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
             tx.replace(R.id.flContent, fragment, "CImportantDocuments");
@@ -146,6 +155,7 @@ public class Dashboard extends AppCompatActivity
         } else if (id == R.id.nav_share) {
             shareAppNew();
         } else if (id == R.id.nav_aboutus) {
+            clearBackStack();
             Bundle bundle = new Bundle();
             bundle.putString("nav_aboutus", "http://trkus.tarule.com/Home/AboutUs");
             fragment = new WebpageLoad();
@@ -155,19 +165,36 @@ public class Dashboard extends AppCompatActivity
             tx.commit();
             tx.addToBackStack(null);
 
+        } else if (id == R.id.nav_notification) {
+            clearBackStack();
+            fragment = new NotiFicationFragmentNew();
+            FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+            tx.replace(R.id.flContent, fragment, "cnotification");
+            tx.commit();
+            tx.addToBackStack(null);
         } else if (id == R.id.nav_favourite) {
+            clearBackStack();
             fragment = new FavouiteContacts();
             FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
             tx.replace(R.id.flContent, fragment, "CfavouriteContacts");
             tx.commit();
             tx.addToBackStack(null);
         } else if (id == R.id.nav_about_turkus) {
+            clearBackStack();
             Bundle bundle = new Bundle();
             bundle.putString("nav_aboutus", "http://trkus.tarule.com/Home/CustomerCare");
             fragment = new WebpageLoad();
             fragment.setArguments(bundle);
             FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
             tx.replace(R.id.flContent, fragment, "Cabouturkus");
+            tx.commit();
+            tx.addToBackStack(null);
+
+        } else if (id == R.id.nav_message) {
+            clearBackStack();
+            fragment = new SellerChatList();
+            FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+            tx.replace(R.id.flContent, fragment, "smessage");
             tx.commit();
             tx.addToBackStack(null);
 
@@ -179,14 +206,14 @@ public class Dashboard extends AppCompatActivity
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        clearBackStack();
+//        clearBackStack();
         return true;
     }
 
     private void clearBackStack() {
         FragmentManager manager = getSupportFragmentManager();
         if (manager.getBackStackEntryCount() > 0) {
-//            FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
+            //FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
             manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
