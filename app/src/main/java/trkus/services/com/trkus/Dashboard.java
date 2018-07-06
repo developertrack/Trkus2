@@ -39,6 +39,7 @@ import trkus.commonmodule.NotiFicationFragmentNew;
 import trkus.commonmodule.WebpageLoad;
 import trkus.customermodule.CustomerProfileDetail;
 import trkus.customermodule.HomePage;
+import trkus.customermodule.ReferFragment;
 import trkus.customermodule.appointmenthistory.AppointmentHistory;
 import trkus.customermodule.customerorder.CustomeOrderPage;
 import trkus.customermodule.dailyneeds.DailyNeedsProductList;
@@ -201,6 +202,12 @@ public class Dashboard extends AppCompatActivity
         } else if (id == R.id.nav_rateapp) {
             rateApp();
         } else if (id == R.id.nav_refer) {
+            clearBackStack();
+            fragment = new ReferFragment();
+            FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+            tx.replace(R.id.flContent, fragment, "refer");
+            tx.commit();
+            tx.addToBackStack(null);
 
         }
 

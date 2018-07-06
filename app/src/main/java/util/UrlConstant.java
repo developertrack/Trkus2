@@ -50,4 +50,8 @@ public class UrlConstant {
     public static String POST_CustometosellerChat = base_url + "api/Seller/CustometosellerChat";
     public static String GET_SellerChatHistory = base_url + "api/Seller/GetSellerChatHistory?SellerId=";
     public static String GET_CustomerChatHistory = base_url + "api/Seller/GetCustomerChatHistory?CustomerId=";
+    public static String GET_Update_Location = base_url + "api/Account/UpdateLoaction";
+    public static String GET_SearchSeller = base_url + "api/Account/SearchSeller?LocationName=";
+    public static String POST_PostRefEarns = base_url + "api/Seller/PostRefEarns";
+
 }

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -93,7 +94,7 @@ public class FavouiteContacts extends Fragment {
                 final Dialog dialog = new Dialog(getActivity());
                 // Include dialog.xml file
                 dialog.setContentView(R.layout.dialog_addcontact);
-
+                dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
                 // set values for custom dialog components - text, image and button
                 name = dialog.findViewById(R.id.name);
                 et_mobile = dialog.findViewById(R.id.et_mobile);
