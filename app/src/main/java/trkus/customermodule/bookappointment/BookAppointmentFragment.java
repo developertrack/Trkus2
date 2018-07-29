@@ -10,7 +10,6 @@ import android.graphics.drawable.shapes.RectShape;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
@@ -45,7 +44,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import trkus.customermodule.appointmenthistory.AppointmentHistory;
 import trkus.services.com.trkus.R;
 import util.AppController;
 import util.UrlConstant;
@@ -231,11 +229,14 @@ public class BookAppointmentFragment extends Fragment {
                                         }
                                         dlgAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
-                                                fragment = new AppointmentHistory();
-                                                FragmentTransaction tx = getActivity().getSupportFragmentManager().beginTransaction();
-                                                tx.replace(R.id.flContent, fragment, "appointment");
-                                                tx.commit();
-                                                tx.addToBackStack(null);
+//                                                fragment = new AppointmentHistory();
+//                                                FragmentTransaction tx = getActivity().getSupportFragmentManager().beginTransaction();
+//                                                tx.replace(R.id.flContent, fragment, "appointment");
+//                                                tx.commit();
+//                                                tx.addToBackStack(null);
+                                                if (getFragmentManager().getBackStackEntryCount() > 0) {
+                                                    getFragmentManager().popBackStackImmediate();
+                                                }
                                             }
                                         });
                                         dlgAlert.setCancelable(true);

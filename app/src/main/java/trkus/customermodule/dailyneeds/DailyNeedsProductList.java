@@ -53,7 +53,7 @@ public class DailyNeedsProductList extends Fragment {
             public void onClick(View v) {
                 fragment = new AddDailyNeedsItem();
                 FragmentTransaction tx = getActivity().getSupportFragmentManager().beginTransaction();
-                tx.replace(R.id.flContent, fragment, "CustomerOrderPage");
+                tx.replace(R.id.flContent, fragment, "addDailyNeedsProductList");
                 tx.commit();
                 tx.addToBackStack(null);
             }

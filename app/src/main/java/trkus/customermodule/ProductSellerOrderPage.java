@@ -15,7 +15,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -48,7 +47,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import trkus.customermodule.customerorder.CustomeOrderPage;
 import trkus.services.com.trkus.R;
 import util.AppController;
 import util.UrlConstant;
@@ -236,11 +234,14 @@ public class ProductSellerOrderPage extends Fragment {
                                             }
                                             dlgAlert.setPositiveButton("OK",  new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int which) {
-                                                    fragment = new CustomeOrderPage();
-                                                    FragmentTransaction tx = getActivity().getSupportFragmentManager().beginTransaction();
-                                                    tx.replace(R.id.flContent, fragment, "CustomerOrderPage");
-                                                    tx.commit();
-                                                    tx.addToBackStack(null);
+//                                                    fragment = new CustomeOrderPage();
+//                                                    FragmentTransaction tx = getActivity().getSupportFragmentManager().beginTransaction();
+//                                                    tx.replace(R.id.flContent, fragment, "CustomerOrderPage");
+//                                                    tx.commit();
+//                                                    tx.addToBackStack(null);
+                                                    if (getFragmentManager().getBackStackEntryCount() > 0) {
+                                                        getFragmentManager().popBackStackImmediate();
+                                                    }
                                                 }
                                             });
                                             dlgAlert.setCancelable(true);

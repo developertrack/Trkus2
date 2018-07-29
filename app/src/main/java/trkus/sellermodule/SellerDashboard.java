@@ -37,11 +37,12 @@ import java.util.Map;
 
 import trkus.commonmodule.NotiFicationFragmentNew;
 import trkus.commonmodule.WebpageLoad;
+import trkus.customermodule.ReferFragment;
 import trkus.sellermodule.appointmentseller.SellerAppointmentHistory;
 import trkus.sellermodule.sellerchat.CustomerChatList;
 import trkus.sellermodule.sellerfavouritecontacts.SellerFavouiteContacts;
-import trkus.sellermodule.sellerorderavailability.SellerDetail;
 import trkus.sellermodule.sellerorder.SellerOrderListing;
+import trkus.sellermodule.sellerorderavailability.SellerDetail;
 import trkus.services.com.trkus.R;
 import util.AppController;
 import util.UrlConstant;
@@ -107,13 +108,13 @@ public class SellerDashboard extends AppCompatActivity implements NavigationView
             clearBackStack();
             Fragment fragment = new SellerDetail();
             FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-            tx.replace(R.id.flContent, fragment, "home");
+            tx.replace(R.id.flContent, fragment, "sprofile");
             tx.commit();
             tx.addToBackStack(null);
 //
         } else if (id == R.id.nav_orderhistory) {
             clearBackStack();
-
+            Log.e("session.getIndustry()", session.getIndustry());
             if(session.getIndustry().equals("Products")){
                 Fragment fragment = new SellerOrderListing();
                 FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
@@ -127,8 +128,6 @@ public class SellerDashboard extends AppCompatActivity implements NavigationView
                 tx.commit();
                 tx.addToBackStack(null);
             }
-
-
         } else if (id == R.id.nav_favourite) {
             clearBackStack();
             fragment = new SellerFavouiteContacts();
@@ -176,7 +175,12 @@ public class SellerDashboard extends AppCompatActivity implements NavigationView
         } else if (id == R.id.nav_rateapp) {
             rateApp();
         } else if (id == R.id.nav_refer) {
-
+            clearBackStack();
+            fragment = new ReferFragment();
+            FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+            tx.replace(R.id.flContent, fragment, "srefer");
+            tx.commit();
+            tx.addToBackStack(null);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

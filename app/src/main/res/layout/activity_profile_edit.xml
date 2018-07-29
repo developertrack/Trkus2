@@ -270,6 +270,7 @@
                     android:layout_alignTop="@+id/photo1"
                     android:layout_margin="1dp"
                     android:gravity="center"
+                    android:visibility="gone"
                     android:textColor="#000000" />
             </RelativeLayout>
 
@@ -295,6 +296,7 @@
                     android:layout_alignTop="@+id/photo2"
                     android:layout_margin="1dp"
                     android:gravity="center"
+                    android:visibility="gone"
                     android:textColor="#000000" />
             </RelativeLayout>
 
@@ -320,7 +322,8 @@
                     android:layout_alignTop="@+id/photo3"
                     android:layout_margin="1dp"
                     android:gravity="center"
-                    android:textColor="#000000" />
+                    android:src="#000000"
+                    android:visibility="gone" />
             </RelativeLayout>
 
         </LinearLayout>

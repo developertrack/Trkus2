@@ -156,8 +156,8 @@ public class CustomerOrderDetails extends Fragment {
                         data_jobject = new JSONObject();
                         try {
                             data_jobject.put("Message", msg_txt);
-                            data_jobject.put("SellerId", seller_id);
-                            data_jobject.put("CutsomerId", session.getKeyUserid());
+                            data_jobject.put("SellerId", session.getKeyUserid());
+                            data_jobject.put("CutsomerId", seller_id);
 
                         } catch (Exception e) {
 

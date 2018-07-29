@@ -164,17 +164,20 @@ public class AddDailyNeedsItem extends Fragment {
                                             android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getActivity());
                                             try {
                                                 dlgAlert.setMessage(mainObject.getString("Message"));
+
+                                                dlgAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        if (getFragmentManager().getBackStackEntryCount() > 0) {
+                                                            getFragmentManager().popBackStackImmediate();
+                                                        }
+                                                    }
+                                                });
+                                                dlgAlert.setCancelable(true);
+                                                dlgAlert.create().show();
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
                                             }
-                                            dlgAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    popBackStack(getActivity().getSupportFragmentManager());
-                                                }
-                                            });
-                                            dlgAlert.setCancelable(true);
-                                            dlgAlert.create().show();
                                         }
                                     });
 
@@ -188,7 +191,14 @@ public class AddDailyNeedsItem extends Fragment {
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
                                             }
-                                            dlgAlert.setPositiveButton("OK",  null);
+                                            dlgAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    if (getFragmentManager().getBackStackEntryCount() > 0) {
+                                                        getFragmentManager().popBackStackImmediate();
+                                                    }
+                                                }
+                                            });
                                             dlgAlert.setCancelable(true);
                                             dlgAlert.create().show();
 

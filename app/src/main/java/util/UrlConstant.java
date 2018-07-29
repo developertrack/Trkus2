@@ -54,4 +54,9 @@ public class UrlConstant {
     public static String GET_SearchSeller = base_url + "api/Account/SearchSeller?LocationName=";
     public static String POST_PostRefEarns = base_url + "api/Seller/PostRefEarns";
 
+//    api/Order/GetAppointmentHistory?CustomerId={CustomerId}
+
+
+//8:- http://webapi.trkus.com/api/Seller/GetCustomerAppoinment?SellerId=118
+
 }

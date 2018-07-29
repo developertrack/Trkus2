@@ -48,7 +48,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".Dashboard"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
 
         <receiver android:name="util.SmsReceiver">
             <intent-filter>
@@ -56,9 +57,11 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name="trkus.sellermodule.ProfileEdit" />
-        <activity android:name="trkus.sellermodule.SellerDashboard" />
-        <activity android:name="trkus.commonmodule.WebpageLoad"></activity>
+
+        <activity
+            android:name="trkus.sellermodule.SellerDashboard"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

@@ -1,6 +1,7 @@
 package trkus.sellermodule.sellerorderavailability;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -220,7 +221,14 @@ public class SellerAvailability extends Fragment {
                                         android.support.v7.app.AlertDialog.Builder dlgAlert = new android.support.v7.app.AlertDialog.Builder(getActivity());
                                         dlgAlert.setMessage("Your Business availability updated successfully");
 
-                                        dlgAlert.setPositiveButton("OK", null);
+                                        dlgAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                if (getFragmentManager().getBackStackEntryCount() > 0) {
+                                                    getFragmentManager().popBackStackImmediate();
+                                                }
+                                            }
+                                        });
                                         dlgAlert.setCancelable(true);
                                         dlgAlert.create().show();
 

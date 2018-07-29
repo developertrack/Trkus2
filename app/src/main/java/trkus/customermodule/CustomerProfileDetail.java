@@ -90,7 +90,7 @@ public class CustomerProfileDetail extends Fragment {
             public void onClick(View v) {
                 fragment = new CustomerProfileEdit();
                 FragmentTransaction tx = getActivity().getSupportFragmentManager().beginTransaction();
-                tx.replace(R.id.flContent, fragment, "CustomerOrderPage");
+                tx.replace(R.id.flContent, fragment, "CustomerProfileDetail");
                 tx.commit();
                 tx.addToBackStack(null);
             }

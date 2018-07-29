@@ -41,6 +41,7 @@ import java.util.regex.Pattern;
 
 import trkus.sellermodule.SellerDashboard;
 import util.AppController;
+import util.SimpleLocation;
 import util.UrlConstant;
 import util.UserSessionManager;
 
@@ -58,10 +59,10 @@ public class UserDetailForm extends AppCompatActivity {
     Intent intent;
     Location location = null;
     JSONObject data;
-    String UserTypeId, OTP, MobileNumber, UserId, response_string;
+    String UserTypeId, OTP, MobileNumber, UserId, response_string, area;
     Button next;
     UserSessionManager session;
-
+    private SimpleLocation slocation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +73,11 @@ public class UserDetailForm extends AppCompatActivity {
         address = findViewById(R.id.address);
         detect = findViewById(R.id.detect);
         next = findViewById(R.id.next);
+        slocation = new SimpleLocation(UserDetailForm.this);
+        if (!slocation.hasLocationEnabled()) {
+            // ask the user to enable location access
+            SimpleLocation.openSettings(UserDetailForm.this);
+        }
 
         session = new UserSessionManager(UserDetailForm.this);
         intent = getIntent();
@@ -110,14 +116,20 @@ public class UserDetailForm extends AppCompatActivity {
             return;
         }
         mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mlocListener);
+        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
 
         detect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String Text = "location: " +
-                        "Latitude = " + location.getLatitude() +
-                        "Longitude = " + location.getLongitude();
-                getCompleteAddressString(location.getLatitude(), location.getLongitude());
+//                if(location!=null){
+//                    String Text = "location: " +
+//                            "Latitude = " + location.getLatitude() +
+//                            "Longitude = " + location.getLongitude();
+//                    getCompleteAddressString(location.getLatitude(), location.getLongitude());
+//                }
+
+                getLocation();
+
             }
         });
         next.setOnClickListener(new View.OnClickListener() {
@@ -141,9 +153,23 @@ public class UserDetailForm extends AppCompatActivity {
         });
     }
 
+    void getLocation() {
+
+        if (slocation != null) {
+            latitude = slocation.getLatitude();
+
+            longitude = slocation.getLongitude();
+
+            getCompleteAddressString(latitude, longitude);
+        }
+    }
+
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
         String strAdd = "";
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+        latitude = LATITUDE;
+        longitude = LONGITUDE;
         try {
             List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
             if (addresses != null) {
@@ -154,6 +180,7 @@ public class UserDetailForm extends AppCompatActivity {
                     strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
                 }
                 strAdd = strReturnedAddress.toString();
+                area = addresses.get(0).getSubLocality();
 
                 address.setText(strAdd);
 
@@ -186,13 +213,18 @@ public class UserDetailForm extends AppCompatActivity {
         pDialog.show();
 
         data_jobject = new JSONObject();
-
+//        "Area": "sample string 5",
+//                "Latitude": 1.0,
+//                "Longitude": 1.0,
         try {
             data_jobject.put("MobileNumber", MobileNumber);
             data_jobject.put("Name", name.getText().toString());
             data_jobject.put("EmailId", email.getText().toString());
             data_jobject.put("Location", address.getText().toString());
             data_jobject.put("UserTypeId", UserTypeId);
+            data_jobject.put("Area", area);
+            data_jobject.put("Latitude", latitude);
+            data_jobject.put("Longitude", longitude);
 
         } catch (Exception e) {
 
@@ -230,20 +262,20 @@ public class UserDetailForm extends AppCompatActivity {
                             } else {
                                 response_string = response.toString();
                                 data = response;
-                                MobileNumber = data.getString("MobileNumber");
-                                OTP = data.getString("OTP");
-                                UserTypeId = data.getString("UserTypeId");
-                                UserId = data.getString("UserId");
+                                MobileNumber = response.getString("MobileNumber");
+                                // OTP = data.getString("OTP");
+                                UserTypeId = response.getString("UserTypeId");
+                                UserId = response.getString("UserId");
                                 if (UserTypeId.equals("1")) {
                                     Intent verification = new Intent(UserDetailForm.this, SellerDashboard.class);
-                                    verification.putExtra("MobileNumber", MobileNumber);
-                                    verification.putExtra("UserTypeId", UserTypeId);
-                                    verification.putExtra("UserId", UserId);
-
                                     session.createUserLoginSession(UserTypeId, UserId, MobileNumber);
 
                                     verification.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(verification);
+                                    verification.putExtra("MobileNumber", MobileNumber);
+                                    verification.putExtra("UserTypeId", UserTypeId);
+                                    verification.putExtra("UserId", UserId);
+
                                 }
                                 if (UserTypeId.equals("2")) {
                                     Intent verification = new Intent(UserDetailForm.this, Dashboard.class);
@@ -258,7 +290,7 @@ public class UserDetailForm extends AppCompatActivity {
                                 }                            }
 
                         } catch (Exception e) {
-
+                            Log.e("exception ", e.toString());
                         }
 
                         pDialog.hide();

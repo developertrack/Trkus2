@@ -356,8 +356,8 @@ public class AddDocumentPage extends Fragment {
                 e.printStackTrace();
             }
         }
-
-        photo1.setImageBitmap(bm);
+        photo1.setImageBitmap(BitmapFactory.decodeFile(imgFile));
+//        photo1.setImageBitmap(bm);
     }
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {

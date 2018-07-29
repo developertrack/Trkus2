@@ -108,7 +108,7 @@ public class MainActivity extends Fragment {
                     Toast.makeText(getActivity(), "Please input some text...", Toast.LENGTH_SHORT).show();
                 } else {
                     //add message to list
-                    ChatBubble ChatBubble = new ChatBubble(editText.getText().toString(), myMessage);
+                    ChatBubble ChatBubble = new ChatBubble(editText.getText().toString(), false);
                     ChatBubbles.add(ChatBubble);
                     adapter.notifyDataSetChanged();
 
@@ -171,11 +171,7 @@ public class MainActivity extends Fragment {
 
                     editText.setText("");
 
-//                    if (myMessage) {
-//                        myMessage = false;
-//                    } else {
-//                        myMessage = true;
-//                    }
+                    myMessage = !myMessage;
                 }
             }
         });

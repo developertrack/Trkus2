@@ -10,6 +10,8 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -52,12 +54,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import trkus.sellermodule.sellerorderavailability.SellerAvailability;
 import trkus.services.com.trkus.R;
 import util.AppController;
-import util.MultipartRequestParams;
+import util.SimpleLocation;
 import util.UrlConstant;
 import util.UserSessionManager;
 import util.Utility;
@@ -95,10 +99,14 @@ public class ProfileEdit extends Fragment {
     String TAG = "LoginActivity_TAG";
     String response_string;
     boolean result;
+    Map<String, String> params;
     private static boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+    String area = "NA", address = "NA";
+    double latitude, longitude;
+    private SimpleLocation location;
     public static String getPath(Context context, Uri uri) {
         String result1 = null;
         String[] proj = {MediaStore.Images.Media.DATA};
@@ -137,6 +145,14 @@ public class ProfileEdit extends Fragment {
         et_emergency_number = view.findViewById(R.id.et_emergency_number);
 
         session = new UserSessionManager(getActivity());
+        location = new SimpleLocation(getActivity());
+        params = new HashMap<>();
+        // if we can't access the location yet
+        if (!location.hasLocationEnabled()) {
+            // ask the user to enable location access
+            SimpleLocation.openSettings(getActivity());
+        }
+        getLocation();
 
         getUserDetail(session.getKeyUserid());
 
@@ -266,7 +282,6 @@ public class ProfileEdit extends Fragment {
 
 
                 pDialog.show();
-                MultipartRequestParams params = new MultipartRequestParams();
 
 
 
@@ -340,7 +355,7 @@ public class ProfileEdit extends Fragment {
                 }) {
                     @Override
                     protected Map<String, String> getParams() {
-                        Map<String, String> params = new HashMap<>();
+
                         params.put("UserId", session.getKeyUserid());
                         params.put("MobileNumber", str_mobile);
                         params.put("Name", str_full_name);
@@ -355,27 +370,32 @@ public class ProfileEdit extends Fragment {
                         params.put("LandLineNumber", str_landline);
                         params.put("EmailId", str_email);
                         params.put("EmergencyNumber", str_emergency_number);
+                        params.put("Area", area);
                         return params;
                     }
 
                     @Override
                     protected Map<String, DataPart> getByteData() {
-                        Map<String, DataPart> params = new HashMap<>();
+                        Map<String, DataPart> params1 = new HashMap<>();
                         // file name could found file base or direct access from real path
                         // for now just get bitmap data from ImageView
                         if(!path1.equals("a")) {
-                            params.put("Image1", new DataPart(System.currentTimeMillis() + ".jpg", getdata(path1), "image/jpeg"));
+                            params1.put("Image1", new DataPart(System.currentTimeMillis() + ".jpg", getdata(path1), "image/jpeg"));
                         }
 
                         if(!path2.equals("a")) {
-                            params.put("Image2", new DataPart(System.currentTimeMillis() + ".jpg", getdata(path2), "image/jpeg"));
+                            params1.put("Image2", new DataPart(System.currentTimeMillis() + ".jpg", getdata(path2), "image/jpeg"));
                         }
                         if(!path3.equals("a")) {
-                            params.put("Image3", new DataPart(System.currentTimeMillis() + ".jpg", getdata(path3), "image/jpeg"));
+                            params1.put("Image3", new DataPart(System.currentTimeMillis() + ".jpg", getdata(path3), "image/jpeg"));
                         }
-                        return params;
+                        Log.e(TAG, params.toString());
+
+                        return params1;
                     }
                 };
+
+                Log.e(TAG, params.toString());
 
                 VolleySingleton.getInstance(getActivity()).addToRequestQueue(multipartRequest);
 
@@ -470,6 +490,41 @@ public class ProfileEdit extends Fragment {
 
     }
 
+    void getLocation() {
+
+        if (location != null) {
+            latitude = location.getLatitude();
+
+            longitude = location.getLongitude();
+
+            getCompleteAddressString(latitude, longitude);
+        }
+    }
+
+    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder("");
+
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+                et_address.setText(strAdd);
+                address = strAdd;
+                area = addresses.get(0).getSubLocality();
+            } else {
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return strAdd;
+    }
+
     public byte[] getdata(String mfile){
         String filepath = "/sdcard/temp.png";
         File imagefile = new File(mfile);
@@ -521,7 +576,9 @@ public class ProfileEdit extends Fragment {
                         pDialog.dismiss();
 
                     } else {
-
+                        et_full_name.setText(response.getString("Name"));
+                        et_mobile.setText(response.getString("MobileNumber"));
+                        et_address.setText(response.getString("Address1"));
 //                        et_full_name, gender, et_blood_group, et_industry_type, et_business_category, et_firm_name, et_address, et_state, et_pincode,
 //                                et_landline, et_mobile, et_email, et_emergency_number;
 
@@ -529,17 +586,15 @@ public class ProfileEdit extends Fragment {
 
                         }else{
 
-                        et_full_name.setText(response.getString("Name"));
+
                         gender.setText(response.getString("Gender"));
                         et_blood_group.setText(response.getString("Bloodgroup"));
                         et_firm_name.setText(response.getString("FirmName"));
-                        et_mobile.setText(response.getString("MobileNumber"));
-                        et_business_category.setText(response.getString("CategoryOfBusiness"));
-                        et_address.setText(response.getString("Address1"));
+//                        et_business_category.setText(response.getString("CategoryOfBusiness"));
                         et_email.setText(response.getString("EmailId"));
-//                        et_landline.setText(response.getString("LandLineNumber"));
+                            et_landline.setText(response.getString("LandLineNumber"));
                         et_emergency_number.setText(response.getString("EmergencyMobileNumber"));
-                        et_industry_type.setText(response.getString("Industry"));
+//                        et_industry_type.setText(response.getString("Industry"));
                         et_state.setText(response.getString("StateName"));
                         et_pincode.setText(response.getString("PinCode"));
 
@@ -1012,6 +1067,7 @@ public class ProfileEdit extends Fragment {
             e.printStackTrace();
         }
 
+
         ivImage.setImageBitmap(thumbnail);
     }
 
@@ -1038,8 +1094,9 @@ public class ProfileEdit extends Fragment {
                 e.printStackTrace();
             }
         }
+        ivImage.setImageBitmap(BitmapFactory.decodeFile(imgFile));
 
-        ivImage.setImageBitmap(bm);
+//        ivImage.setImageBitmap(bm);
     }
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {

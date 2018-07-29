@@ -6,6 +6,8 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -38,11 +40,13 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import trkus.services.com.trkus.R;
 import util.AppController;
+import util.SimpleLocation;
 import util.UrlConstant;
 import util.UserSessionManager;
 
@@ -75,7 +79,9 @@ public class CustomerProfileEdit extends Fragment {
     JSONObject data;
     private String userChoosenTask;
     Fragment fragment = null;
-
+    String area = "NA", address = "NA";
+    double latitude, longitude;
+    private SimpleLocation location;
     private static boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
@@ -106,7 +112,14 @@ public class CustomerProfileEdit extends Fragment {
 
 
         session = new UserSessionManager(getActivity());
+        location = new SimpleLocation(getActivity());
 
+        // if we can't access the location yet
+        if (!location.hasLocationEnabled()) {
+            // ask the user to enable location access
+            SimpleLocation.openSettings(getActivity());
+        }
+        getLocation();
         scrollprofile = view.findViewById(R.id.scrollprofile);
 
         scrollprofile.setOnTouchListener(new View.OnTouchListener() {
@@ -341,6 +354,40 @@ public class CustomerProfileEdit extends Fragment {
 
     }
 
+    void getLocation() {
+
+        if (location != null) {
+            latitude = location.getLatitude();
+
+            longitude = location.getLongitude();
+
+            getCompleteAddressString(latitude, longitude);
+        }
+    }
+
+    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder("");
+
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+                et_address.setText(strAdd);
+                address = strAdd;
+                area = addresses.get(0).getSubLocality();
+            } else {
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return strAdd;
+    }
 
     public void UpdateUser() {
 
@@ -377,6 +424,8 @@ public class CustomerProfileEdit extends Fragment {
         } catch (Exception e) {
 
         }
+
+        Log.e(TAG, data_jobject.toString());
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
                 UrlConstant.POST_Customer_Profile_Update, data_jobject,
@@ -455,7 +504,7 @@ public class CustomerProfileEdit extends Fragment {
                     @Override
                     public void run() {
                         AlertDialog.Builder dlgAlert = new AlertDialog.Builder(getActivity());
-                        dlgAlert.setMessage("Error while signup in, please try again");
+                        dlgAlert.setMessage("Error while fetching, please try again");
                         dlgAlert.setPositiveButton("OK", null);
                         dlgAlert.setCancelable(true);
                         dlgAlert.create().show();
@@ -925,20 +974,22 @@ public class CustomerProfileEdit extends Fragment {
                         pDialog.dismiss();
 
                     } else {
-
+                        et_full_name.setText(response.getString("Name"));
+                        et_email.setText(response.getString("EmailId"));
+                        et_mobile.setText(response.getString("MobileNumber"));
+                        et_address.setText(response.getString("Address1"));
                         if(response.getString("AdharNumber").equals("null")){
 
                         }else {
 
-                            et_full_name.setText(response.getString("Name"));
+
                             gender.setText(response.getString("Gender"));
                             et_dateofbirth.setText(response.getString("DOB"));
-                            et_email.setText(response.getString("EmailId"));
+
                             et_aadhar.setText(response.getString("AdharNumber"));
                             et_blood_group.setText(response.getString("Bloodgroup"));
                             et_marital_status.setText(response.getString("MaritalStatus"));
                             et_occupation.setText(response.getString("Occuption"));
-                            et_mobile.setText(response.getString("MobileNumber"));
                             et_address.setText(response.getString("Address1"));
                             et_pincode.setText(response.getString("PinCode"));
                             et_landline.setText(response.getString("LandLineNumber"));

@@ -147,7 +147,7 @@ public class SellerDetail extends Fragment {
                         }else {
 
                             name.setText(response.getString("Name"));
-                            gender.setText(response.getString("Gender")+",");
+                            gender.setText(response.getString("Gender") + "");
                             bloodgroup.setText(response.getString("Bloodgroup"));
                             firmname.setText(response.getString("FirmName"));
                             mobile.setText(response.getString("MobileNumber"));
